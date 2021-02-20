@@ -4,7 +4,7 @@ from django.test import TestCase
 
 import time
 print("start")
-time.sleep(5)
+time.sleep(5) 
 print("star2t")
 
 
