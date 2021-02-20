@@ -1,0 +1,10 @@
+{% extends 'aggregator/layout.html' %}
+{% block content%}
+
+  <a class="nav-item nav-link" href="{% url 'aggregator-about' %}">About</a>
+  <a class="nav-item nav-link" href="{% url 'aggregator-agg_func' %}">Agg</a>
+  <h1>HOME!</h1>
+  {% for w in wallets %}
+    <p>{{ w }} ,{{w.balance}}</p>
+  {% endfor %}
+{% endblock %}

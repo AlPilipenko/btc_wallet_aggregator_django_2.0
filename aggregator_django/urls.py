@@ -14,8 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
+"""route urls to certain location so they can be handles by certain way"""
+"""goes to URL admin, then logic in admin.site.urls handels the route further"""
 urlpatterns = [
-    path('admin/', admin.site.urls),
+
+    path('admin/', admin.site.urls), # leave trailing slashes
+
+    # aggregator part of the url was already proccessed- being choped off
+    # therefore urls in app receive epmty string(matches home '')
+    # Benefits of this system - aggregator_dev/ - to switch from live to development
+
+    # path('aggregator/', include('aggregator.urls')),
+    path('', include('aggregator.urls')), # to make it main landing page of project
 ]
