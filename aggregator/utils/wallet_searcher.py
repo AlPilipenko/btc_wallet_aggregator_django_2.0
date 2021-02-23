@@ -1,5 +1,6 @@
 from aggregator.models import Wallet
-
+from random import randint
+import time
 
 def address_filter(wallet):
     "Extracts clean btc wallet address and gets the tag(if there is one)"
@@ -58,8 +59,10 @@ def wallet_data_scraper(url_list_of_sets):
         Strips all the unnessecery data and presents it in readable format. """
 
 
-    for set in url_list_of_sets:
+    for i, set in enumerate(url_list_of_sets):
+        print(i)
         precooked_sets_wallet_list = wallet_raw_extractor(set)
+        time.sleep(randint(5, 8))
         yield precooked_sets_wallet_list
 
 
@@ -78,10 +81,11 @@ def wallet_raw_extractor(url_set):
     tables = [table_1, table_2]
 
     new_table = pd.DataFrame(columns=range(0,10), index = [0])
-
+    print(url_set)
     # mixed_wallet_data_table = []
     row_marker = 0
     for table in tables:
+        time.sleep(1)
         try:
             for row in table.find_all('tr'):
                 wallet = []
@@ -109,30 +113,48 @@ def register_new_wallet(wallet):
     balance = balance_filter(wallet[2])
     last_in = date_filter(wallet[5])
     last_out = date_filter(wallet[8])
-
+    # print(repr(wallet[9]),wallet[9])
+    out_nums = wallet[9] if wallet[9] != '' else '0'
+    transactions_delta = int(wallet[6]) - int(out_nums)
     Wallet(wallet_name=wallet[0],
            address=wallet[1],
            balance=balance,
+           delta=balance,
            misc=wallet[3],
            last_in=last_in,
            last_out=last_out,
            in_nums=wallet[6],
-           out_nums=wallet[9]
+           out_nums=out_nums,
+           transactions_delta=transactions_delta,
+           transactions_delta_all=transactions_delta
            ).save()
 
 
-def update_wallet(db_wallet, wallet):
+def update_wallet(db_wallet, wallet, db_wallet_ins, db_wallet_outs):
     "Updates existing wallet"
-    balance = balance_filter(wallet[2])
+
+    old_balance = list(db_wallet.values('balance'))[0].get('balance')
+    new_balance = balance_filter(wallet[2])
+    # print(new_balance,repr(new_balance))
+    delta = float(new_balance) - float(old_balance)
+
     last_in = date_filter(wallet[5])
     last_out = date_filter(wallet[8])
+    # print(wallet)
+    in_nums = wallet[6] if wallet[6] != '' else '0'
+    out_nums = wallet[9] if wallet[9] != '' else '0'
+    tr_delta_old = int(db_wallet_ins) - int(db_wallet_outs)
+    tr_delta_new = int(in_nums) - int(out_nums)
+    transactions_delta = tr_delta_new - tr_delta_old
 
-    db_wallet.update(balance=balance,
+    db_wallet.update(balance=new_balance,
                      last_in=last_in,
                      last_out=last_out,
-                     in_nums=wallet[6],
-                     out_nums=wallet[9],
-                     up_to_date='no'
+                     in_nums=in_nums,
+                     out_nums=out_nums,
+                     delta=delta,
+                     transactions_delta=transactions_delta,
+                     transactions_delta_all=tr_delta_new
                     )
 
 
@@ -154,8 +176,8 @@ def up_to_date_check(wallet_list):
         db_wallet_ins = list(db_wallet.values('in_nums'))[0].get('in_nums')
         db_wallet_outs = list(db_wallet.values('out_nums'))[0].get('out_nums')
 
-        if wallet_ins != db_wallet_ins or wallet_outs != db_wallet_outs:
-            update_wallet(db_wallet, wallet)
+        # if wallet_ins != db_wallet_ins or wallet_outs != db_wallet_outs:
+        update_wallet(db_wallet, wallet, db_wallet_ins, db_wallet_outs)
 
 
 
@@ -168,9 +190,21 @@ def main(srch_rng, start_pg):
     wallets_scraped_data_list = list(itertools.chain.from_iterable(
                                                      wallets_scraped_data_list))
 
+
     # print(wallets_scraped_data_list)
     # for x in wallets_scraped_data_list:
     #     print(x)
-    # # exit(0)
+
+    # wallets_scraped_data_list = [
+    # ['200', '1FtHBKrYkDchMA1pwRTpYZ77TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '2'],
+    # ['200', '1FtHBKrYkDchMA1pwRTpfesf7TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '1'],
+    # ['200', '1FtHBKrYkDchMeaaA1pwRTpfesf7TpfwSgh6iF', '500 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '2'],
+    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '2'],
+    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '3'],
+    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpawdfwSgh6iF', '4,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '4'],
+    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpfeawdfwSgh6iF', '3,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '5'],
+    # ['200', '1FtHBKrYkDchsefMA1pwRTafaafpfesf7sfesefTpfeawdfwSgh6iF', '10,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '1', '', '', '']
+    # ]
+    # exit(1)
     up_to_date_check(wallets_scraped_data_list)
     print('Initial up to date check done.')
