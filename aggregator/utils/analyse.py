@@ -1,4 +1,4 @@
-from . import (transaction_sorter, wallet_searcher, data_manipulation,
+from . import ( wallet_searcher,
                        cpi_stat, daily_stat_comparison)
 from aggregator.apps import AggregatorConfig
 
@@ -33,7 +33,7 @@ def periodic_trends():
 
 
 
-    
+
 
     balance = 0
     total_delta = 0
