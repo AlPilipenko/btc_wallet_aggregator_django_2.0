@@ -1,0 +1,5 @@
+.gitignore
+test.py
+apps.cpython-38.pyc
+models.cpython-38.pyc
+analyse.cpython-38.pyc
