@@ -28,6 +28,32 @@ class Aggregator(models.Model):
     aggregation_date = models.DateTimeField(default=timezone.now)
     balance = models.TextField(default='0')
     delta = models.TextField(default='0')
+    delta_per = models.TextField(default='0')
     transactions_delta = models.TextField(default='0')
     transactions_delta_all = models.TextField(default='0')
     new_wallets = models.TextField(default='0')
+
+
+
+class Category(models.Model):
+
+    aggregation_date = models.DateTimeField(default=timezone.now)
+
+    marked_balance = models.TextField(default='0')
+    marked_delta = models.TextField(default='0')
+    marked_delta_per = models.TextField(default='0')
+
+    exchanges_balance = models.TextField(default='0')
+    exchanges_delta = models.TextField(default='0')
+    exchanges_delta_per = models.TextField(default='0')
+
+    algo_balance = models.TextField(default='0')
+    algo_delta = models.TextField(default='0')
+    algo_delta_per = models.TextField(default='0')
+
+    trading_balance = models.TextField(default='0')
+    trading_delta = models.TextField(default='0')
+    trading_delta_per = models.TextField(default='0')
+
+    def __str__(self):
+        return str(self.aggregation_date)[:19]

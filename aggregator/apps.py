@@ -8,6 +8,6 @@ class AggregatorConfig(AppConfig):
         There are 100 pages, hence 10 000 wallets to analyse.
     """
 
-    PAGE_SEARCH_RANGE = 1, 3 # max range(1-100)
+    PAGE_SEARCH_RANGE = 1, 101 # max range(1-100)
     START_PAGE = 1  # Wallet position where to start search (1-100)
     WALLET_SEARCH_END_POSITION = 100 # in case of debbuging wallets (1-100)

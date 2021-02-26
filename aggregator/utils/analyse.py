@@ -1,46 +1,50 @@
-from . import ( wallet_searcher,
-                       cpi_stat, daily_stat_comparison)
+from . import wallet_searcher
 from aggregator.apps import AggregatorConfig
 
 import time
 import json
 from datetime import datetime
 from sys import exit
-from aggregator.models import Wallet, Aggregator
+from aggregator.models import Wallet, Aggregator, Category
 #========================PARAMETERS=============================================
 
 search_range = AggregatorConfig.PAGE_SEARCH_RANGE
 start_page = AggregatorConfig.START_PAGE
 end_position = AggregatorConfig.WALLET_SEARCH_END_POSITION
 
-# status = 0 # fixes dataset error. When proper dataset implemented can be deleted
-
-
-start_time = time.monotonic()
-
 #===============================================================================
-
-def periodic_trends():
-    print("reaching server...")
-    wallets = Wallet.objects.all()
-    total_wallets = len(wallets)
-
-    "Makes preliminary up to date checks for wallets before processing?????"
-    wallet_searcher.main(search_range, start_page)
-
-    wallets = Wallet.objects.all()
-    total_wallets_updated = len(wallets)
+def percentage_diff(new_value, old_value):
+    diff = round(((new_value - old_value) / old_value) * 100)
+    return diff
 
 
-
-
-
+def cat_trends_calc(category, cat_name):
+    "DESCRIPTION HERE!!!"
     balance = 0
     total_delta = 0
-    total_transactions_delta = 0
-    total_tr_delta_all = 0
-    new_wallets = total_wallets_updated - total_wallets
+    last_record = Category.objects.last()
 
+    for wallet in category:
+        wallet_balance = wallet.__dict__.get('balance')
+        wallet_delta = wallet.__dict__.get('delta')
+        balance += float(wallet_balance)
+        total_delta += float(wallet_delta)
+
+    if last_record != None:
+        old_balance = last_record.__dict__.get(cat_name+'_balance')
+        delta_per = percentage_diff(balance, float(old_balance))
+    else:
+        delta_per = 0
+    return round(balance), round(total_delta), round(delta_per)
+
+
+def all_trends_calc(wallets):
+    "DESCRIPTION HERE!!!"
+    balance = 0
+    delta = 0
+    tr_delta = 0
+    tr_delta_all = 0
+    last_record = Aggregator.objects.last()
 
     for i, wallet in enumerate(wallets):
         wallet_balance = wallet.__dict__.get('balance')
@@ -48,16 +52,65 @@ def periodic_trends():
         wallet_transactions_delta = wallet.__dict__.get('transactions_delta')
         wallet_tr_delta_all = wallet.__dict__.get('transactions_delta_all')
         balance += float(wallet_balance)
-        total_delta += float(wallet_delta)
-        total_transactions_delta += int(wallet_transactions_delta)
-        total_tr_delta_all += int(wallet_tr_delta_all)
+        delta += float(wallet_delta)
+        tr_delta += int(wallet_transactions_delta)
+        tr_delta_all += int(wallet_tr_delta_all)
 
-    Aggregator(balance=balance,
-               delta=total_delta,
-               transactions_delta=total_transactions_delta,
+    if last_record != None:
+        old_balance = last_record.__dict__.get('balance')
+        delta_per = percentage_diff(balance, float(old_balance))
+    else:
+        delta_per = 0
+    return round(balance), delta, tr_delta, tr_delta_all, delta_per
+
+
+def periodic_trends():
+    "DESCRIPTION HERE!!"
+    print("reaching server...")
+    wallets = Wallet.objects.all()
+    total_wallets = len(wallets)
+
+    "Makes preliminary up to date checks for wallets before processing?????"
+    # wallet_searcher.main(search_range, start_page)
+
+    wallets = Wallet.objects.all()
+    total_wallets_updated = len(wallets)
+    new_wallets = total_wallets_updated - total_wallets
+    bal, delta, tr_delta, tr_delta_all, delta_per = all_trends_calc(wallets)
+
+    Aggregator(balance=bal,
+               delta=delta,
+               delta_per=delta_per,
+               transactions_delta=tr_delta,
+               transactions_delta_all=tr_delta_all,
                new_wallets=new_wallets,
-               transactions_delta_all=total_tr_delta_all
                ).save()
+
+
+    marked = Wallet.objects.filter(category='marked').all()
+    exchanges = Wallet.objects.filter(category='exchange/pool').all()
+    algo = Wallet.objects.filter(category='algo').all()
+    trading = Wallet.objects.filter(category='trading').all()
+
+    marked_bal, marked_delta, marked_delta_per =cat_trends_calc(marked,'marked')
+    ex_bal, ex_delta, ex_delta_per = cat_trends_calc(exchanges, 'exchanges')
+    algo_bal, algo_delta, algo_delta_per = cat_trends_calc(algo, 'algo')
+    trade_bal, trade_delta, trade_delta_per = cat_trends_calc(trading,'trading')
+
+    Category(marked_balance=marked_bal,
+             marked_delta=marked_delta,
+             marked_delta_per=marked_delta_per,
+             exchanges_balance=ex_bal,
+             exchanges_delta=ex_delta,
+             exchanges_delta_per=ex_delta_per,
+             algo_balance=algo_bal,
+             algo_delta=algo_delta,
+             algo_delta_per=algo_delta_per,
+             trading_balance=trade_bal,
+             trading_delta=trade_delta,
+             trading_delta_per=trade_delta_per,
+            ).save()
+
 
 
     exit(1)
@@ -104,7 +157,6 @@ def periodic_trends():
 
 
 #!! automate whole proccess
-#!!  - send email maybe
 
 # think about how to properly analyse data
 
@@ -115,9 +167,9 @@ def periodic_trends():
 
 # Postphoned
 # maybe some interface?
-# travel back in time to gain data for that date ?
+
 # keep track of  "Addresses richer than field" ?
 
 
-#Problems : polonex wallet not loading all tranasctions 17A16QmavnUfCW11DAApiJxp7ARnxN5pGX
+
 # so only data for couple of days being used

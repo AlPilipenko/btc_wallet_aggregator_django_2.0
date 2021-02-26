@@ -10,4 +10,5 @@ urlpatterns = [
     path('', views.home, name='aggregator-home'),
     path('about/', views.about, name='aggregator-about'), #  name='aggregator-about' - important for URLs lookup(in home.html)
     path('agg-func/', views.agg_func, name='aggregator-agg_func'),  # leave trailing /
+    path('cat-func/', views.cat_func, name='aggregator-cat_func'),
 ]

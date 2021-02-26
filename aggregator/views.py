@@ -1,7 +1,7 @@
 from django.shortcuts import render # transforms templates to HttpResponse
 from django.http import HttpResponse
-from .models import Wallet
-from .utils import analyse
+from .models import Wallet, Aggregator
+from .utils import analyse, wallet_categories
 # Create your views here.
 #Views always has to return HttpResponse or exceptions
 
@@ -16,7 +16,7 @@ from .utils import analyse
 def home(request): # must take request
     # passed variables have to be dict?
     wallets = {
-        'wallets' : Wallet.objects.all()
+        'wallets' :  Aggregator.objects.all()
     }
 
     return render(request, 'aggregator/home.html', wallets)
@@ -30,7 +30,18 @@ def about(request):
 def agg_func(request):
     analyse.periodic_trends()
     wallets = {
-        'wallets' : Wallet.objects.all()
+        'wallets' :  Aggregator.objects.all()
+
+    }
+
+    return render(request, 'aggregator/home.html', wallets)
+
+
+
+def cat_func(request):
+    wallet_categories.cat_sorter()
+    wallets = {
+        'wallets' :  Aggregator.objects.all()
 
     }
 

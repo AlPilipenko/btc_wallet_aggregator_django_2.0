@@ -21,7 +21,7 @@ def address_filter(wallet):
     while wallet.find('.') != -1:
         wallet = wallet.replace('.', '')
         cut = len(wallet)
-        tag = temp[cut+1:]
+        tag = temp[cut+1:] 
         tag = '' if len(tag) == 1 else tag
         return wallet, tag
 
