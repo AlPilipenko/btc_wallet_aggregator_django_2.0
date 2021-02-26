@@ -14,7 +14,7 @@ end_position = AggregatorConfig.WALLET_SEARCH_END_POSITION
 
 #===============================================================================
 def percentage_diff(new_value, old_value):
-    diff = round(((new_value - old_value) / old_value) * 100)
+    diff = round(((new_value - old_value) / old_value) * 100, 2)
     return diff
 
 
@@ -26,16 +26,18 @@ def cat_trends_calc(category, cat_name):
 
     for wallet in category:
         wallet_balance = wallet.__dict__.get('balance')
-        wallet_delta = wallet.__dict__.get('delta')
+        # wallet_delta = wallet.__dict__.get('delta')
         balance += float(wallet_balance)
-        total_delta += float(wallet_delta)
+
 
     if last_record != None:
         old_balance = last_record.__dict__.get(cat_name+'_balance')
         delta_per = percentage_diff(balance, float(old_balance))
+        total_delta = balance - float(old_balance)
     else:
         delta_per = 0
-    return round(balance), round(total_delta), round(delta_per)
+        total_delta = 0
+    return round(balance), round(total_delta), delta_per
 
 
 def all_trends_calc(wallets):
@@ -48,20 +50,22 @@ def all_trends_calc(wallets):
 
     for i, wallet in enumerate(wallets):
         wallet_balance = wallet.__dict__.get('balance')
-        wallet_delta = wallet.__dict__.get('delta')
         wallet_transactions_delta = wallet.__dict__.get('transactions_delta')
         wallet_tr_delta_all = wallet.__dict__.get('transactions_delta_all')
         balance += float(wallet_balance)
-        delta += float(wallet_delta)
+        # wallet_delta = wallet.__dict__.get('delta')
+        # delta += float(wallet_delta)
         tr_delta += int(wallet_transactions_delta)
         tr_delta_all += int(wallet_tr_delta_all)
 
     if last_record != None:
         old_balance = last_record.__dict__.get('balance')
         delta_per = percentage_diff(balance, float(old_balance))
+        delta = balance - float(old_balance)
     else:
         delta_per = 0
-    return round(balance), delta, tr_delta, tr_delta_all, delta_per
+        delta = 0
+    return round(balance), round(delta), tr_delta, tr_delta_all, delta_per
 
 
 def periodic_trends():
