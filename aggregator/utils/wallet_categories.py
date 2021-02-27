@@ -8,7 +8,7 @@ exchanges = ['Huobi',
              'BitX',
              'Bittrex',
              'Bitfinex',
-             'F2Pool', 
+             'F2Pool',
              'SlushPool',
              'BITMEX',
              'OKEx',
@@ -18,7 +18,7 @@ exchanges = ['Huobi',
 
 def cat_sorter():
     "Allocates wallets to special category based on wallet performance"
-    wallets = Wallet.objects.all()
+    wallets = Wallet.objects.filter(category='normal').all()
 
     for wallet in wallets:
         misc = wallet.__dict__.get('misc')

@@ -1,4 +1,4 @@
-from . import wallet_searcher
+from . import wallet_searcher, wallet_categories
 from aggregator.apps import AggregatorConfig
 
 import time
@@ -75,7 +75,10 @@ def periodic_trends():
     total_wallets = len(wallets)
 
     "Makes preliminary up to date checks for wallets before processing?????"
-    # wallet_searcher.main(search_range, start_page)
+    wallet_searcher.main(search_range, start_page)
+    wallet_categories.cat_sorter()
+
+
 
     wallets = Wallet.objects.all()
     total_wallets_updated = len(wallets)
@@ -117,7 +120,7 @@ def periodic_trends():
 
 
 
-    exit(1)
+    # exit(1)
 
 
 
