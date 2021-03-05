@@ -14,18 +14,27 @@ end_position = AggregatorConfig.WALLET_SEARCH_END_POSITION
 
 #===============================================================================
 def percentage_diff(new_value, old_value):
-    diff = round(((new_value - old_value) / old_value) * 100, 2)
-    return diff
+    try:
+        diff = round(((new_value - old_value) / old_value) * 100, 2)
+        return diff
+    except:
+        return 0
 
 
-def cat_trends_calc(category, cat_name):
-    "DESCRIPTION HERE!!!"
+def cat_trends_calc(category, wallets_scraped_list, cat_name):
+    "Aggregates balances of wallets by categories"
     balance = 0
     total_delta = 0
     last_record = Category.objects.last()
 
     for wallet in category:
+        wallet_name = wallet.__dict__.get('wallet_name')
+
+        if str(wallets_scraped_list).find(wallet_name) == -1:
+            continue
+
         wallet_balance = wallet.__dict__.get('balance')
+        print(cat_name, wallet_name, wallet_balance )
         # wallet_delta = wallet.__dict__.get('delta')
         balance += float(wallet_balance)
 
@@ -40,53 +49,79 @@ def cat_trends_calc(category, cat_name):
     return round(balance), round(total_delta), delta_per
 
 
-def all_trends_calc(wallets):
-    "DESCRIPTION HERE!!!"
+def all_trends_calc(wallets ,wallets_scraped_list):
+    "Aggregates balances of all wallets"
+
+
     balance = 0
     delta = 0
+    real_delta = 0
     tr_delta = 0
     tr_delta_all = 0
     last_record = Aggregator.objects.last()
 
     for i, wallet in enumerate(wallets):
+        wallet_name = wallet.__dict__.get('wallet_name')
+        if str(wallets_scraped_list).find(wallet_name) == -1:
+            continue
         wallet_balance = wallet.__dict__.get('balance')
         wallet_transactions_delta = wallet.__dict__.get('transactions_delta')
         wallet_tr_delta_all = wallet.__dict__.get('transactions_delta_all')
         balance += float(wallet_balance)
-        # wallet_delta = wallet.__dict__.get('delta')
-        # delta += float(wallet_delta)
         tr_delta += int(wallet_transactions_delta)
         tr_delta_all += int(wallet_tr_delta_all)
+
+        "testing this"
+        real_wallet_delta = wallet.__dict__.get('delta')
+        real_delta += float(real_wallet_delta)
 
     if last_record != None:
         old_balance = last_record.__dict__.get('balance')
         delta_per = percentage_diff(balance, float(old_balance))
+        "balance delta"
         delta = balance - float(old_balance)
     else:
         delta_per = 0
         delta = 0
-    return round(balance), round(delta), tr_delta, tr_delta_all, delta_per
+    return round(balance), round(delta), round(real_delta), tr_delta, tr_delta_all, delta_per
 
 
 def periodic_trends():
-    "DESCRIPTION HERE!!"
+    "Aggregates balances of the most rich BTC wallets"
     print("reaching server...")
     wallets = Wallet.objects.all()
     total_wallets = len(wallets)
 
-    "Makes preliminary up to date checks for wallets before processing?????"
-    wallet_searcher.main(search_range, start_page)
+    "Updates database"
+    wallets_scraped_list = wallet_searcher.main(search_range, start_page)
+    "Depending on wallet performance designates it to particular category"
     wallet_categories.cat_sorter()
+
+    #
+    # wallets_scraped_list = [
+    # ['200', '1FtHBKrYkDchMA1pwRTpYZ77TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '2'],
+    # ['200', '1FtHBKrYkDchMA1pwRTpfesf7TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '1'],
+    # ['200', '1FtHBKrYkDchMeaaA1pwRTpfesf7TpfwSgh6iF', '500 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '2'],
+    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '2'],
+    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '3'],
+    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpawdfwSgh6iF', '4,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '4'],
+    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpfeawdfwSgh6iF', '3,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '5'],
+    # ['200', '1FtHBKrYkDchsefMA1pwRTafaafpfesf7sfesefTpfeawdfwSgh6iF', '10,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '1', '', '', '']
+    # ]
+
+
 
 
 
     wallets = Wallet.objects.all()
     total_wallets_updated = len(wallets)
     new_wallets = total_wallets_updated - total_wallets
-    bal, delta, tr_delta, tr_delta_all, delta_per = all_trends_calc(wallets)
+    bal, delta, tr_delta, real_delta ,tr_delta_all, delta_per = all_trends_calc(
+                                                wallets, wallets_scraped_list)
 
     Aggregator(balance=bal,
                delta=delta,
+               real_delta=real_delta,
                delta_per=delta_per,
                transactions_delta=tr_delta,
                transactions_delta_all=tr_delta_all,
@@ -99,10 +134,14 @@ def periodic_trends():
     algo = Wallet.objects.filter(category='algo').all()
     trading = Wallet.objects.filter(category='trading').all()
 
-    marked_bal, marked_delta, marked_delta_per =cat_trends_calc(marked,'marked')
-    ex_bal, ex_delta, ex_delta_per = cat_trends_calc(exchanges, 'exchanges')
-    algo_bal, algo_delta, algo_delta_per = cat_trends_calc(algo, 'algo')
-    trade_bal, trade_delta, trade_delta_per = cat_trends_calc(trading,'trading')
+    marked_bal, marked_delta, marked_delta_per = cat_trends_calc(marked,
+                                                 wallets_scraped_list, 'marked')
+    ex_bal, ex_delta, ex_delta_per = cat_trends_calc(exchanges,
+                                              wallets_scraped_list, 'exchanges')
+    algo_bal, algo_delta, algo_delta_per = cat_trends_calc(algo,
+                                                    wallets_scraped_list,'algo')
+    trade_bal, trade_delta, trade_delta_per = cat_trends_calc(trading,
+                                                wallets_scraped_list, 'trading')
 
     Category(marked_balance=marked_bal,
              marked_delta=marked_delta,

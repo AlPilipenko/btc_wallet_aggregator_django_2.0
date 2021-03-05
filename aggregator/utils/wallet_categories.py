@@ -12,7 +12,10 @@ exchanges = ['Huobi',
              'SlushPool',
              'BITMEX',
              'OKEx',
-             'Bitstamp.net'
+             'Bitstamp.net',
+             'BetVIP',
+             'Xapo',
+             'HaoBTC',
             ]
 
 
@@ -33,7 +36,8 @@ def cat_sorter():
 
         if last_out != '':
             # print(last_out)
-            year, month, day = int(last_out[0:4]), int(last_out[5:7]), int(last_out[8:10])
+            year, month, day = (int(last_out[0:4]), int(last_out[5:7]),
+                                                            int(last_out[8:10]))
             time_delta = date.today() - date(year, month, day)
             time_delta = str(time_delta)
             if time_delta == '0:00:00':

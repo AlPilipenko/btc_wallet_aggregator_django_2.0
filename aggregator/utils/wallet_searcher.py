@@ -21,7 +21,7 @@ def address_filter(wallet):
     while wallet.find('.') != -1:
         wallet = wallet.replace('.', '')
         cut = len(wallet)
-        tag = temp[cut+1:] 
+        tag = temp[cut+1:]
         tag = '' if len(tag) == 1 else tag
         return wallet, tag
 
@@ -159,8 +159,7 @@ def update_wallet(db_wallet, wallet, db_wallet_ins, db_wallet_outs):
 
 
 def up_to_date_check(wallet_list):
-    """Determines if walletes are up to date. If up to date gets data for
-       analysing from DB, if not then data will be scraped"""
+    """Resiters new wallets to the DB. Updates existing wallets."""
     for wallet in wallet_list:
         if len(wallet) == 0:
             continue
@@ -182,7 +181,8 @@ def up_to_date_check(wallet_list):
 
 
 def main(srch_rng, start_pg):
-    """ Makes preliminary up to date checks for wallets before processing """
+    """ Makes up to date checks for wallets before aggregating.
+        Fetches whole list of wallets (max=10000) """
     wallet_sets_url_list = wallet_sets_url_list_maker(srch_rng, start_pg)
     wallets_scraped_data_list = wallet_data_scraper(wallet_sets_url_list)
 
@@ -207,4 +207,5 @@ def main(srch_rng, start_pg):
     # ]
     # exit(1)
     up_to_date_check(wallets_scraped_data_list)
-    print('Initial up to date check done.')
+    print('Wallet search completed. Database updated.')
+    return wallets_scraped_data_list

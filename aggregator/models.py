@@ -28,6 +28,7 @@ class Aggregator(models.Model):
     aggregation_date = models.DateTimeField(default=timezone.now)
     balance = models.TextField(default='0')
     delta = models.TextField(default='0')
+    real_delta = models.TextField(default='0')
     delta_per = models.TextField(default='0')
     transactions_delta = models.TextField(default='0')
     transactions_delta_all = models.TextField(default='0')
