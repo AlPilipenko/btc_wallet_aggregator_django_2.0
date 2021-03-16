@@ -1,9 +1,20 @@
 {% extends 'aggregator/layout.html' %}
 {% block content%}
+{% load static %}
 
-  <a class="nav-item nav-link" href="{% url 'aggregator-cat_func' %}">Categories</a>
-  <a class="nav-item nav-link" href="{% url 'aggregator-about' %}">About</a>
-  <a class="nav-item nav-link" href="{% url 'aggregator-agg_func' %}">Agg</a>
+  <div class="functions">
+
+
+    <!-- <img src="{% static 'all_plot.png' %}" alt=""> -->
+    <a class="nav-item nav-link" href="{% url 'aggregator-tests' %}">Tests</a>
+    <a class="nav-item nav-link" href="{% url 'aggregator-plot_func' %}">Plot</a>
+    <a class="nav-item nav-link" href="{% url 'aggregator-cat_func' %}">Categories</a>
+    <!-- <a class="nav-item nav-link" href="{% url 'aggregator-about' %}">About</a> -->
+    <a class="nav-item nav-link" href="{% url 'aggregator-agg_func' %}">Agg</a>
+    <a class="nav-item nav-link" href="{% url 'aggregator-wallets_list' %}">All wallets</a>
+
+  </div>
+
   <h1>HOME!</h1>
   {% for w in wallets %}
     <p>{{ w }} ,{{w.balance}}</p>

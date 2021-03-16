@@ -1,6 +1,15 @@
-from aggregator.models import Wallet
+from django.db import models
+from django.utils import timezone
+from datetime import datetime
+from aggregator.models import Wallet, Wallet_List
 from random import randint
 import time
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+from django.utils import timezone
+headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36'}
+
 
 def address_filter(wallet):
     "Extracts clean btc wallet address and gets the tag(if there is one)"
@@ -54,6 +63,17 @@ def wallet_sets_url_list_maker(srch_rng, start_pg):
         start_pg += 1
 
 
+def btc_price_extractor():
+    "Gets current btc $ price"
+    btc_price_url = f'https://bitinfocharts.com/bitcoin/'
+    page = requests.get(btc_price_url, headers=headers)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    btc_price_raw = soup.find(id="tdid2")
+    btc_price = soup.select_one("span[itemprop*=price]").text.replace(',','')
+    btc_price = round(float(btc_price))
+    return btc_price
+
+
 def wallet_data_scraper(url_list_of_sets):
     """ Extracts raw wallet data from the list of URL containing sets of wallets.
         Strips all the unnessecery data and presents it in readable format. """
@@ -68,10 +88,6 @@ def wallet_data_scraper(url_list_of_sets):
 
 def wallet_raw_extractor(url_set):
     "Scraps wallets data and returns a list"
-    import requests
-    import pandas as pd
-    from bs4 import BeautifulSoup
-    headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36'}
 
     page = requests.get(url_set, headers=headers)
 
@@ -110,7 +126,7 @@ def register_new_wallet(wallet):
     "Adds new wallets into database"
     wallet[1], wallet[0] = wallet[1], wallet[1]
     wallet[1], wallet[3] = address_filter(wallet[1])
-    balance = balance_filter(wallet[2])
+    balance = float(balance_filter(wallet[2]))
     last_in = date_filter(wallet[5])
     last_out = date_filter(wallet[8])
     # print(repr(wallet[9]),wallet[9])
@@ -134,7 +150,7 @@ def update_wallet(db_wallet, wallet, db_wallet_ins, db_wallet_outs):
     "Updates existing wallet"
 
     old_balance = list(db_wallet.values('balance'))[0].get('balance')
-    new_balance = balance_filter(wallet[2])
+    new_balance = float(balance_filter(wallet[2]))
     # print(new_balance,repr(new_balance))
     delta = float(new_balance) - float(old_balance)
 
@@ -147,6 +163,9 @@ def update_wallet(db_wallet, wallet, db_wallet_ins, db_wallet_outs):
     tr_delta_new = int(in_nums) - int(out_nums)
     transactions_delta = tr_delta_new - tr_delta_old
 
+    # from django.db import models
+
+
     db_wallet.update(balance=new_balance,
                      last_in=last_in,
                      last_out=last_out,
@@ -154,7 +173,8 @@ def update_wallet(db_wallet, wallet, db_wallet_ins, db_wallet_outs):
                      out_nums=out_nums,
                      delta=delta,
                      transactions_delta=transactions_delta,
-                     transactions_delta_all=tr_delta_new
+                     transactions_delta_all=tr_delta_new,
+                     updated_at=timezone.now()
                     )
 
 
@@ -205,7 +225,14 @@ def main(srch_rng, start_pg):
     # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpfeawdfwSgh6iF', '3,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '5'],
     # ['200', '1FtHBKrYkDchsefMA1pwRTafaafpfesf7sfesefTpfeawdfwSgh6iF', '10,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '1', '', '', '']
     # ]
+    cleaned_wal_scraped_data = [x for x in wallets_scraped_data_list if x != []]
+    today_wall_list = Wallet_List.objects.filter(id=1)
+    today_wall_list.update(wallet_list=cleaned_wal_scraped_data,
+                    updated_at=timezone.now())
+
     # exit(1)
+    #
     up_to_date_check(wallets_scraped_data_list)
+    btc_price = btc_price_extractor()
     print('Wallet search completed. Database updated.')
-    return wallets_scraped_data_list
+    return wallets_scraped_data_list, btc_price

@@ -5,7 +5,7 @@ import time
 import json
 from datetime import datetime
 from sys import exit
-from aggregator.models import Wallet, Aggregator, Category
+from aggregator.models import Wallet, Aggregator, Category, Wallet_List
 #========================PARAMETERS=============================================
 
 search_range = AggregatorConfig.PAGE_SEARCH_RANGE
@@ -92,11 +92,13 @@ def periodic_trends():
     wallets = Wallet.objects.all()
     total_wallets = len(wallets)
 
+    # wallet_searcher.main(search_range, start_page)
+
     "Updates database"
-    wallets_scraped_list = wallet_searcher.main(search_range, start_page)
+    wallets_scraped_list, btc_price = wallet_searcher.main(search_range, start_page)
     "Depending on wallet performance designates it to particular category"
     wallet_categories.cat_sorter()
-
+    "#####uncoment"
     #
     # wallets_scraped_list = [
     # ['200', '1FtHBKrYkDchMA1pwRTpYZ77TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '2'],
@@ -111,7 +113,13 @@ def periodic_trends():
 
 
 
+    #===========================debug===========================================
+    # btc_price = 60456
+    # import ast
+    # db_string_list =  Wallet_List.objects.first().wallet_list
+    # wallets_scraped_list = ast.literal_eval(db_string_list)
 
+    #===========================================================================
 
     wallets = Wallet.objects.all()
     total_wallets_updated = len(wallets)
@@ -126,6 +134,7 @@ def periodic_trends():
                transactions_delta=tr_delta,
                transactions_delta_all=tr_delta_all,
                new_wallets=new_wallets,
+               btc_price=btc_price,
                ).save()
 
 
@@ -140,6 +149,7 @@ def periodic_trends():
                                               wallets_scraped_list, 'exchanges')
     algo_bal, algo_delta, algo_delta_per = cat_trends_calc(algo,
                                                     wallets_scraped_list,'algo')
+    # input('algo...')
     trade_bal, trade_delta, trade_delta_per = cat_trends_calc(trading,
                                                 wallets_scraped_list, 'trading')
 

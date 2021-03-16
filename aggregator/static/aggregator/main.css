@@ -1,4 +1,23 @@
 .container {
-  background: #444474;
+  /* #324960 */
+  background: pink;
+  color: black;
+}
+
+
+
+table,td, th {
+   border-spacing: 5px;
+   border: 2px solid black;
+   padding: 5px;
+}
+
+
+/* a {
+  color: black;
+
+} */
+.functions {
+  color: black;
 
 }

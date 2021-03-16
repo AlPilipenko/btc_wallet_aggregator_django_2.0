@@ -18,47 +18,58 @@ exchanges = ['Huobi',
              'HaoBTC',
             ]
 
-
 def cat_sorter():
     "Allocates wallets to special category based on wallet performance"
-    wallets = Wallet.objects.filter(category='normal').all()
+    # Wallet.objects.all().update(category='normal')
+    # return ''
+    wallets = Wallet.objects.all()
+
+    # wallets = Wallet.objects.all()
+    # for wallet in wallets:
+    #     balance = float(wallet.__dict__.get('balance'))
+    #     print(type(balance))
+    #     wallet.__dict__.update(balance=balance)
+    #     print(type(wallet.__dict__.get('balance')))
+
+    # wallet.category='marked'
+
 
     for wallet in wallets:
-        misc = wallet.__dict__.get('misc')
-
-        in_nums = int(wallet.__dict__.get('in_nums'))
-        out_nums = int(wallet.__dict__.get('out_nums'))
+        misc = wallet.misc
+        in_nums = int(wallet.in_nums)
+        out_nums = int(wallet.out_nums)
         total_tr = in_nums + out_nums
-
-        last_in = wallet.__dict__.get('last_in')
-        last_out = wallet.__dict__.get('last_out')
+        last_in = wallet.last_in
+        last_out = wallet.last_out
         time_delta = 0
+        category = 'normal'
 
-        if last_out != '':
-            # print(last_out)
-            year, month, day = (int(last_out[0:4]), int(last_out[5:7]),
-                                                            int(last_out[8:10]))
-            time_delta = date.today() - date(year, month, day)
-            time_delta = str(time_delta)
-            if time_delta == '0:00:00':
-                continue
-            else:
-                time_delta = time_delta[:time_delta.find('d')-1]
-                time_delta = int(time_delta)
+        # if last_out != '':
+        #     # print(last_out)
+        #     year, month, day = (int(last_out[0:4]), int(last_out[5:7]),
+        #                                                     int(last_out[8:10]))
+        #     time_delta = date.today() - date(year, month, day)
+        #     time_delta = str(time_delta)
+        #     if time_delta == '0:00:00':
+        #         continue
+        #     else:
+        #         time_delta = time_delta[:time_delta.find('d')-1]
+        #         time_delta = int(time_delta)
 
         if misc != '':
-            wallet.__dict__.update(category='marked')
-
+            category = 'marked'
             for exchange in exchanges:
                 if misc.find(exchange) != -1:
-                    wallet.__dict__.update(category='exchange/pool')
+                    category = 'exchange/pool'
 
-        if total_tr > 500 and wallet.__dict__.get('category') != 'exchange/pool':
-            wallet.__dict__.update(category='trading')
+        if total_tr > 500 and category != 'exchange/pool':
+            category = 'trading'
             if in_nums > 2000 and out_nums > 2000:
-                wallet.__dict__.update(category='algo')
+                category = 'algo'
 
-        if wallet.__dict__.get('category') == 'normal' and time_delta > 1825:
-            wallet.__dict__.update(category='inactive')
 
+        # if category == 'normal' and time_delta > 1825:
+        #     category = 'inactive'
+        # print("2",category)
+        wallet.category = category
         wallet.save()

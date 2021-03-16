@@ -1,0 +1,28 @@
+{% extends 'aggregator/layout.html' %}
+{% block content%}
+{% load static %}
+
+
+  <h1>{{ date }}</h1>
+  <table>
+    <tr>
+      <th>Rank</th>
+      <th>Address</th>
+      <th>Balance (BTC)</th>
+      <th>Ins</th>
+      <th>Outs</th>
+
+   </tr>
+    {% for wallet in wallets %}
+      {% for el in wallet %}
+        <td>
+          <p>{{el}}</p>
+        </td>
+      {% endfor %}
+      <tr>
+
+
+    {% endfor %}
+  </table>
+
+{% endblock %}

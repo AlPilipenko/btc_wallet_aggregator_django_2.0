@@ -2,7 +2,16 @@ from django.db import models
 from django.utils import timezone
 # Create your models here.
 
+class Wallet_List(models.Model):
+    updated_at = models.DateTimeField(auto_now=True)
+    wallet_list = models.TextField(blank=True)
+
+
 class Wallet(models.Model):
+    first_reading_date = models.DateTimeField(default=timezone.now)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     wallet_name = models.TextField(blank=True)
     address = models.TextField()
     misc = models.TextField(blank=True)
@@ -24,7 +33,7 @@ class Wallet(models.Model):
 
 
 class Aggregator(models.Model):
-
+    btc_price = models.TextField(default='0')
     aggregation_date = models.DateTimeField(default=timezone.now)
     balance = models.TextField(default='0')
     delta = models.TextField(default='0')

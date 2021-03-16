@@ -17,7 +17,14 @@
       <title> Aggregator </title>
     {% endif %}
   </head>
+
   <body>
+    <a class="nav-item nav-link" value="boom" href="{% url 'aggregator-home' %}">Home</a>
+    <a class="nav-item nav-link" value="boom" href="{% url 'aggregator-light_theme' %}">Light theme</a>
+    <a class="nav-item nav-link" value="boom" href="{% url 'aggregator-dark_theme' %}">Dark theme</a>
+
+
+
     <div class="container">
 
       {% block content %}{% endblock %}
