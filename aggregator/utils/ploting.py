@@ -218,7 +218,7 @@ class Main_Plot_Maker():
         ratio = []
         db_wallets = Wallet.objects.all()
 
-        for w in db_wallets[:100]:
+        for w in db_wallets[:10001]:
             balance = w.__dict__.get('balance')
             in_nums = w.__dict__.get('in_nums')
             out_nums = w.__dict__.get('out_nums')
@@ -257,7 +257,7 @@ class Main_Plot_Maker():
 
         db_wallets = Wallet.objects.all()
 
-        for w in db_wallets[:100]:
+        for w in db_wallets[:10001]:
             balance = w.__dict__.get('balance')
             category = w.__dict__.get('category')
             in_nums = w.__dict__.get('in_nums')

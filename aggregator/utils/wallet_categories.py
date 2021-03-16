@@ -71,5 +71,8 @@ def cat_sorter():
         # if category == 'normal' and time_delta > 1825:
         #     category = 'inactive'
         # print("2",category)
-        wallet.category = category
-        wallet.save()
+        if wallet.category == 'normal' and category == 'normal':
+            continue
+        else:
+            wallet.category = category
+            wallet.save()

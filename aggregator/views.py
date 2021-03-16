@@ -60,14 +60,14 @@ def cat_func(request):
 
 
 def light_theme(request):
-    theme = {'type': 'light'}
-    return render(request, 'aggregator/plot.html', theme)
+    # theme = {'type': 'light'}
+    return render(request, 'aggregator/plot.html')
 
 
 
 def dark_theme(request):
-    theme = {'type': 'dark'}
-    return render(request, 'aggregator/plot_dark.html',theme)
+    # theme = {'type': 'dark'}
+    return render(request, 'aggregator/plot_dark.html')
 
 
     # theme = request.POST
@@ -79,45 +79,44 @@ def dark_theme(request):
 
 def plot_func(request):
     "Desctiption"
-    #
-    #
-    # plot = ploting.agg_plot()
+    styles = ['dark_background', 'Solarize_Light2']
+    for style in styles:
+        ploting.Main_Plot_Maker.plot_style = style
 
-    for x in range(0,2):
-        # print(x)
+        all_plot = ploting.Main_Plot_Maker('dodgerblue',
+                                                'All wallet aggregation', 'all')
+        algo_plot = ploting.Main_Plot_Maker('m',
+                                       'High-volume wallet aggregation', 'algo')
+        exchanges_plot = ploting.Main_Plot_Maker('y',
+                                     'Exhanges wallet aggregation', 'exchanges')
+        trading_plot = ploting.Main_Plot_Maker('c',
+                                  'Medium-volume wallet aggregation', 'trading')
+        marked_plot = ploting.Main_Plot_Maker('r',
+                                     'Interesting wallet aggregation', 'marked')
 
-        ploting.Main_Plot_Maker.plot_style  = 'dark_background'
-        if x == 1:
-            ploting.Main_Plot_Maker.plot_style  = 'Solarize_Light2'
-            # ploting.Main_Plot_Maker.change_style('ggplot')
-
-        all_plot = ploting.Main_Plot_Maker('b', 'All wallet aggregation', 'all')
-        algo_plot = ploting.Main_Plot_Maker('m', 'High-volume wallet aggregation', 'algo') #_balance', 'algo_delta_per')
-        exchanges_plot = ploting.Main_Plot_Maker('y', 'Exhanges wallet aggregation', 'exchanges')
-        trading_plot = ploting.Main_Plot_Maker('c', 'Medium-volume wallet aggregation', 'trading') #_balance', 'algo_delta_per')
-        marked_plot = ploting.Main_Plot_Maker('r', 'Interesting wallet aggregation', 'marked')
-
-        combined_plot = ploting.Main_Plot_Maker('b', 'Categories wallet aggregation')
-
+        combined_plot = ploting.Main_Plot_Maker('dodgerblue',
+                                                'Categories wallet aggregation')
 
 
         all_plot.plot_type1(['aggregation_date', 'balance', 'delta_per'])
-        all_plot.plot_type1(['aggregation_date', 'balance', 'btc_price'], 'Balance (BTC)',
-                    'all_btc', 'Wallet aggregation and BTC price', 'BTC price ($)')
-        all_plot.plot_type1(['aggregation_date', 'transactions_delta', 'btc_price'],
-                                'Transactions delta','tr_delta_btc_price',
-                                'Transactions delta and BTC price', 'BTC price ($)')
+        all_plot.plot_type1(['aggregation_date', 'balance', 'btc_price'],
+                 'Balance (BTC)', 'all_btc', 'Wallet aggregation and BTC price',
+                                                                'BTC price ($)')
+        all_plot.plot_type1(['aggregation_date', 'transactions_delta',
+                        'btc_price'], 'Transactions delta','tr_delta_btc_price',
+                            'Transactions delta and BTC price', 'BTC price ($)')
         all_plot.plot_type1(['aggregation_date', 'new_wallets', 'btc_price'],
-                                'New wallets','new_wallets_btc_price',
-                                'Daily new wallets and BTC price', 'BTC price ($)')
-
-        algo_plot.plot_type1(['aggregation_date', 'algo_balance', 'algo_delta_per'])
-        exchanges_plot.plot_type1(['aggregation_date', 'exchanges_balance', 'exchanges_delta_per'])
-        trading_plot.plot_type1(['aggregation_date', 'trading_balance', 'trading_delta_per'])
-        marked_plot.plot_type1(['aggregation_date', 'marked_balance', 'marked_delta_per'])
-
-
-        combined_plot.plot_type2('all', 'algo', 'exchanges', 'trading', 'marked')
+                                          'New wallets','new_wallets_btc_price',
+                             'Daily new wallets and BTC price', 'BTC price ($)')
+        algo_plot.plot_type1(['aggregation_date', 'algo_balance',
+                                                              'algo_delta_per'])
+        exchanges_plot.plot_type1(['aggregation_date', 'exchanges_balance',
+                                                         'exchanges_delta_per'])
+        trading_plot.plot_type1(['aggregation_date', 'trading_balance',
+                                                           'trading_delta_per'])
+        marked_plot.plot_type1(['aggregation_date', 'marked_balance',
+                                                            'marked_delta_per'])
+        combined_plot.plot_type2('all', 'algo', 'exchanges', 'trading','marked')
 
         ploting.Main_Plot_Maker.plot_type3()
         ploting.Main_Plot_Maker.plot_type4()
@@ -128,32 +127,15 @@ def plot_func(request):
     # ploting.algo_plot.plot_cat
 
     return render(request, 'aggregator/plot.html')
-    return redirect(home)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def wallets_list(request):
     "Desctiption"
+    # wallet_number = 10001
+    # search = request.POST.get('value')
+    # print(search,request.POST)
+    wallet_number = int(request.GET.get('value'))
+    # print(search,request.GET)
     from datetime import datetime, timedelta
     from django.utils import timezone
     wallet_list = []
@@ -163,12 +145,13 @@ def wallets_list(request):
     # Author.objects.order_by('-score', 'last_name')[:30]
     # db_wallets = {k: v for k, v in sorted(x.items(), key=lambda item: item[1])}
     for wallet in db_wallets:
-        if timedelta(hours = 24) > today_date - wallet.get('updated_at'):
+        if timedelta(hours = 12) > today_date - wallet.get('updated_at'):
+            # print(timedelta(hours = 12) )
             wallet_list.append(wallet)
 
     # wallets = Wallet.objects.values() #.order_by('balance')
     wallet_list = sorted(wallet_list, key=lambda k: float(k['balance']), reverse=True)
-    for i, wallet in enumerate(wallet_list):
+    for i, wallet in enumerate(wallet_list[:wallet_number]):
         # print(x)
         new_wallet_list.append([i+1, wallet.get('address'), round(float(wallet.get('balance'))),
                                wallet.get('in_nums'), wallet.get('out_nums')]
