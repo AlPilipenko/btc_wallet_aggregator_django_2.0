@@ -83,7 +83,8 @@ def all_trends_calc(wallets ,wallets_scraped_list):
     else:
         delta_per = 0
         delta = 0
-    return round(balance), round(delta), round(real_delta), tr_delta, tr_delta_all, delta_per
+    return (round(balance), round(delta), round(real_delta),
+                                              tr_delta, tr_delta_all, delta_per)
 
 
 def periodic_trends():
@@ -167,12 +168,6 @@ def periodic_trends():
              trading_delta_per=trade_delta_per,
             ).save()
 
-
-
-    # exit(1)
-
-
-
 ######################################################
 
 
@@ -206,26 +201,26 @@ def periodic_trends():
 #Done/testing Fix error when wall_tran has wallet info and dataset don't
 ###########################################################################################
 
-#!! - make it daily stat readable and convinient
-# !!!All data neatly presented in spreadsheet
-#!! think about cpi type index solution for stats
+#Done - make it daily stat readable and convinient
+# Done !All data neatly presented in spreadsheet
+#Done think about cpi type index solution for stats
 
 
 
 #!! automate whole proccess
 
-# think about how to properly analyse data
+#... think about how to properly analyse data
 
 
-#... write documentation for each method and proper func names
-#... keep optimising, write comments, make code more pretty
+#Done write documentation for each method and proper func names
+#Done keep optimising, write comments, make code more pretty
 
 
 # Postphoned
-# maybe some interface?
+#Done maybe some interface?
 
-# keep track of  "Addresses richer than field" ?
+#dismissed. keep track of  "Addresses richer than field" ?
 
 
 
-# so only data for couple of days being used
+#cant do better than this || so only data for couple of days being used

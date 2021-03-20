@@ -5,6 +5,7 @@ from django.utils import timezone
 class Wallet_List(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     wallet_list = models.TextField(blank=True)
+    wallet_list_display = models.TextField(blank=True)
 
 
 class Wallet(models.Model):

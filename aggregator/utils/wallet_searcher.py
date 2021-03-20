@@ -117,9 +117,8 @@ def wallet_raw_extractor(url_set):
                 yield wallet
         except:
             from sys import exit
-            print("####### IP probably blocked! #########")
+            print("Connection lost or IP probably blocked!")
             exit(1)
-    # return mixed_wallet_data_table
 
 
 def register_new_wallet(wallet):
@@ -210,28 +209,11 @@ def main(srch_rng, start_pg):
     wallets_scraped_data_list = list(itertools.chain.from_iterable(
                                                      wallets_scraped_data_list))
 
-
-    # print(wallets_scraped_data_list)
-    # for x in wallets_scraped_data_list:
-    #     print(x)
-
-    # wallets_scraped_data_list = [
-    # ['200', '1FtHBKrYkDchMA1pwRTpYZ77TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '2'],
-    # ['200', '1FtHBKrYkDchMA1pwRTpfesf7TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '1'],
-    # ['200', '1FtHBKrYkDchMeaaA1pwRTpfesf7TpfwSgh6iF', '500 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '2'],
-    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7TpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '92', '', '', '2'],
-    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpfwSgh6iF', '1,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '3'],
-    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpawdfwSgh6iF', '4,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '4'],
-    # ['200', '1FtHBKrYkDchMA1pwRTafaafpfesf7sfesefTpfeawdfwSgh6iF', '3,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '93', '', '', '5'],
-    # ['200', '1FtHBKrYkDchsefMA1pwRTafaafpfesf7sfesefTpfeawdfwSgh6iF', '10,000 BTC ($386,807,422 USD)', '0.04293%', '2018-12-06 05:10:20 UTC', '2021-01-22 09:36:26 UTC', '1', '', '', '']
-    # ]
     cleaned_wal_scraped_data = [x for x in wallets_scraped_data_list if x != []]
     today_wall_list = Wallet_List.objects.filter(id=1)
     today_wall_list.update(wallet_list=cleaned_wal_scraped_data,
                     updated_at=timezone.now())
-
-    # exit(1)
-    #
+                    
     up_to_date_check(wallets_scraped_data_list)
     btc_price = btc_price_extractor()
     print('Wallet search completed. Database updated.')

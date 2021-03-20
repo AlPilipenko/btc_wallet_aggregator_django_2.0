@@ -3,16 +3,24 @@
 {% load static %}
 
 
-  <h1>{{ date }}</h1>
-  <table>
-    <tr>
-      <th>Rank</th>
-      <th>Address</th>
-      <th>Balance (BTC)</th>
-      <th>Ins</th>
-      <th>Outs</th>
+  <div class="disclaimer">
+    *all data was acquired on {{ date }} at
+     <a href="http://www.bitinfocharts.com">bitinfocharts.com</a><br>
+    **correlation ≠ causation
+  </div>
 
-   </tr>
+  <div class="table-wrapper">
+  <table class='fl-table'>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Address</th>
+        <th>Balance (BTC)</th>
+        <th>Ins</th>
+        <th>Outs</th>
+
+     </tr>
+    </thead>
     {% for wallet in wallets %}
       {% for el in wallet %}
         <td>
@@ -24,5 +32,9 @@
 
     {% endfor %}
   </table>
-  <a class="nav-item nav-link" href="{% url 'aggregator-wallets_list'%}?value=10000 ">Load all wallets</a> 
+  </div>
+
+  {% if length_of_list == 1000 %}
+    <a class="nav-item nav-link" href="{% url 'aggregator-wallets_list'%}?value=[10000, 'light'] ">Load all wallets</a>
+  {% endif %}
 {% endblock %}

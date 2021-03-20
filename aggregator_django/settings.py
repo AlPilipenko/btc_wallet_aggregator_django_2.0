@@ -32,6 +32,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_cron',
+    'django_crontab',
+    'background_task',
     'aggregator.apps.AggregatorConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
 
 MIDDLEWARE = [
@@ -49,6 +53,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CRONJOBS = [
+    ('30 05 * * *', 'aggregator.cron.scrap_update'),
 ]
 
 ROOT_URLCONF = 'aggregator_django.urls'
@@ -64,6 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'aggregator.context_processors.add_variable_to_context',
             ],
         },
     },

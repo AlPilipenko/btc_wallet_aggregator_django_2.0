@@ -2,21 +2,123 @@
 {% block content%}
 {% load static %}
 
-  <div class="functions">
+    <h1 style="color: dodgerblue; font-weight: bold;">wall<b style="color: red">agg</b> <b style="color: grey">- bitcoin</b> wallets <b style="color: red">aggregator</b></h1>
+    <div class="disclaimer">
+      *all data was acquired on {{ date }} at
+       <a href="http://www.bitinfocharts.com">bitinfocharts.com</a><br>
+      **correlation ≠ causation
+    </div>
+
+    <div class="description">
+    <!-- <h1>Description</h1> -->
+    <p>This website collects the top 10000 richest Bitcoin wallets data on the daily
+       basis from bitinfocharts.com. Data that could potentially present interest is:
+    </p>
+    <ul>
+       <li>balances of the wallets</li>
+       <li>transaction numbers of in/out of the wallets</li>
+    </ul>
+    <p>Wallet balances are aggregated and day-to-day changes are
+        visualised on the plots. Transactions delta is calculated by
+        subtracting "out" transactions from "in" transactions for each
+        wallet and ​then all deltas are summarised and also displayed on
+        the plots.
+    </p>
+    </div>
+
+    <div class="row">
+      <div class="column">
+        <img src="{% static '/plots/all_plot.png' %}" alt="">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/all_btc_plot.png' %}" alt="">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/tr_delta_btc_price_plot.png' %}" alt="">
+      </div>
+
+      <div class="column">
+        <img src="{% static '/plots/new_wallets_btc_price_plot.png' %}" alt="">
+      </div>
+    </div>
 
 
-    <!-- <img src="{% static 'all_plot.png' %}" alt=""> -->
-    <a class="nav-item nav-link" href="{% url 'aggregator-tests' %}">Tests</a>
-    <a class="nav-item nav-link" href="{% url 'aggregator-plot_func' %}">Plot</a>
-    <a class="nav-item nav-link" href="{% url 'aggregator-cat_func' %}">Categories</a>
-    <!-- <a class="nav-item nav-link" href="{% url 'aggregator-about' %}">About</a> -->
-    <a class="nav-item nav-link" href="{% url 'aggregator-agg_func' %}">Agg</a>
-    <a class="nav-item nav-link" href="{% url 'aggregator-wallets_list' %}?value=1000">All wallets</a>
+    <div class="description">
+      <p> Wallets can be broken into categories based on their "performance".
+          Bitinfocharts already identified some of the major exchanges and
+          pools wallets such as Binance, Bitfinex and many others.
+          Bitinfocharts also marked some of the wallets for reasons
+          only they know, so those wallets are assigned to the "interesting" category.
+          Wallets that have a total transactions number > 500 are assigned to the
+          "medium volume" category. Wallets that have > 2000 ins and > 2000
+          outs transactions are allocated to the "high volume" category. And the rest
+          of the wallets are placed to the "normal" category.
+      </p>
 
-  </div>
+      <p>Here is a quick categories breakdown:</p>
+      <div class="row">
+        <div class="column">
+      <ul>
+        <li><p>Binance, Poloniex, Kraken, SlushPool etc.             </p></li>
+        <li><p>Marked by bitinfocharts                               </p></li>
+        <li><p>Total transactions number > 500                       </p></li>
+        <li><p>> 2000 ins and > 2000 outs transactions               </p></li>
+        <li><p>Wallets that don't fit in any of the categories above </p></li>
+      </ul>
+      </div>
+        <div class="column">
+            <p style="color: #c6c669">--> exchange/pool </p>
+            <p style="color: red">--> interesting</p>
+            <p style="color: cyan">--> medium-volume </p>
+            <p style="color: magenta">--> high-volume </p>
+            <p style="color: grey">--> normal </p>
+        </div>
+      <p>*wallet can be assigned to only one category</p>
+    </div>
+    </div>
 
-  <h1>HOME!</h1>
-  {% for w in wallets %}
-    <p>{{ w }} ,{{w.balance}}</p>
-  {% endfor %}
+    <div class="row">
+      <div class="column">
+        <img src="{% static '/plots/bal_tr_cat_scatter.png' %}" alt="">
+      </div>
+      <div class="column">
+          <img src="{% static '/plots/bal_tr_scatter.png' %}" alt="">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/algo_plot.png' %}" alt="">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/exchanges_plot.png' %}" alt="">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/trading_plot.png' %}" alt="">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/marked_plot.png' %}" alt="">
+    </div>
+
+
+    <div class="description">
+      <p>Here is a bunch of informative pie-charts. We can clearly see
+         that high-volume and exchanges/pool categories despite being the smallest
+         categories are responsible for the main bulk of all the transactions.
+      </p>
+    </div>
+
+    <div class="row">
+      <div class="column">
+        <img src="{% static '/plots/wall_bal_cat_pie.png' %}" alt="" style="width:100%">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/wall_tr_cat_pie.png' %}" alt="" style="width:100%">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/wall_cat_pie.png' %}" alt="" style="width:100%">
+      </div>
+      <div class="column">
+        <img src="{% static '/plots/combined_plot.png' %}" alt="">
+      </div>
+    </div>
+
+
 {% endblock %}

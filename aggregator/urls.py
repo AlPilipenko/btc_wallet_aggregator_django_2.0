@@ -8,7 +8,7 @@ urlpatterns = [
     # specify the view(function created in views) that will handle the logic
     # name -
     path('', views.home, name='aggregator-home'),
-    path('tests', views.tests, name='aggregator-tests'),
+    # path('tests', views.tests, name='aggregator-tests'),
     path('about/', views.about, name='aggregator-about'), #  name='aggregator-about' - important for URLs lookup(in home.html)
     path('agg-func/', views.agg_func, name='aggregator-agg_func'),  # leave trailing /
     path('cat-func/', views.cat_func, name='aggregator-cat_func'),
@@ -18,4 +18,8 @@ urlpatterns = [
                                         name='aggregator-light_theme'),
     path('dark_theme/', views.dark_theme,
                                         name='aggregator-dark_theme'),
+    path('wallets_list_maker_func/', views.wallets_list_maker_func,
+                                        name='aggregator-wallets_list_maker_func'),
+
+
 ]

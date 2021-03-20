@@ -19,9 +19,23 @@
   </head>
 
   <body>
-    <a class="nav-item nav-link" value="boom" href="{% url 'aggregator-home' %}">Home</a>
-    <a class="nav-item nav-link" value="boom" href="{% url 'aggregator-light_theme' %}">Light theme</a>
-    
+    <ul class='nav'>
+      <li><a class="nav-item nav-link" href="{% url 'aggregator-home' %}?value=dark">Plots</a></li>
+      <li><a class="nav-item nav-link" href="{% url 'aggregator-plot_func' %}">Plot func</a></li>
+      <li><a class="nav-item nav-link" href="{% url 'aggregator-wallets_list_maker_func' %}">List maker func</a></li>
+      <li><a class="nav-item nav-link" href="{% url 'aggregator-cat_func' %}">Categories func</a></li>
+      <li><a class="nav-item nav-link" href="{% url 'aggregator-agg_func' %}">Agg func</a></li>
+      <li><a class="nav-item nav-link" href="{% url 'aggregator-wallets_list' %}?value=[1000, 'dark']">All wallets</a></li>
+      <li><a class="nav-item nav-link" href="{% url 'aggregator-about' %}?value=dark">About</a></li>
+      <li><a class="nav-item nav-link" href="{% url 'aggregator-light_theme' %}">Light theme</a></li>
+    </ul>
+
+
+
+    <!-- <a class="nav-item nav-link" href="{% url 'aggregator-about' %}">About</a> -->
+
+
+
 
 
 

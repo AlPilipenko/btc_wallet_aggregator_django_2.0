@@ -1,0 +1,36 @@
+{% extends 'aggregator/layout_dark.html' %}
+{% block content%}
+{% load static %}
+
+
+  <div class="disclaimer">
+    *all data was acquired on {{ date }} at
+     <a href="http://www.bitinfocharts.com">bitinfocharts.com</a><br>
+    **correlation ≠ causation
+  </div>
+  <div class="table-wrapper">
+  <table class='fl-table'>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Address</th>
+        <th>Balance (BTC)</th>
+        <th>Ins</th>
+        <th>Outs</th>
+
+     </tr>
+    </thead>
+    {% for wallet in wallets %}
+      {% for el in wallet %}
+        <td>
+          <p>{{el}}</p>
+        </td>
+      {% endfor %}
+      <tr>
+
+
+    {% endfor %}
+  </table>
+  </div>
+  <a class="nav-item nav-link" href="{% url 'aggregator-wallets_list'%}?value=[10000, 'dark'] ">Load all wallets</a>
+{% endblock %}
