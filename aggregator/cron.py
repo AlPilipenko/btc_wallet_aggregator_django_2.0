@@ -1,3 +1,4 @@
-from .utils import analyse
+from .utils.analyse import periodic_trends
+
 def scrap_update():
-    analyse.periodic_trends()
+    periodic_trends()

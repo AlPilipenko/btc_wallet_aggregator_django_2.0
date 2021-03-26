@@ -2,7 +2,7 @@ import matplotlib
 from pylab import rcParams
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-from aggregator.models import Aggregator, Category, Wallet
+from aggregator.models import Aggregator, Category, Wallet, Wallet_List, Plots
 from sys import exit
 
 class Main_Plot_Maker():
@@ -91,25 +91,57 @@ class Main_Plot_Maker():
         fig = matplotlib.pyplot.gcf()
         fig.set_size_inches(4.4, 4.4)
 
+        # if Main_Plot_Maker.plot_style == 'Solarize_Light2':
+        #     if save_name != None:
+        #         ax2.set_ylabel(ylabel, color=color)
+        #         plt.title(title, fontweight ="bold",fontsize=12)
+        #         plt.savefig('aggregator/static/plots/' + save_name +'_plot.png',
+        #                                                     bbox_inches='tight')
+        #     else:
+        #         plt.savefig('aggregator/static/plots/' + save_name +'_plot.png',
+        #                                                     bbox_inches='tight')
+        # else:
+        #     plt.grid(False)
+        #     if save_name != None:
+        #         ax2.set_ylabel(ylabel, color=color)
+        #         plt.title(title, fontweight ="bold",fontsize=12)
+        #         plt.savefig('aggregator/static/plots/'+save_name+'_plot_dark.png',
+        #                                                     bbox_inches='tight')
+        #     else:
+        #         plt.savefig('aggregator/static/plots/'+self.name+'_plot_dark.png',
+        #                                                     bbox_inches='tight')
+
+
+        url = 'media/aggregator/plots/'
         if Main_Plot_Maker.plot_style == 'Solarize_Light2':
             if save_name != None:
                 ax2.set_ylabel(ylabel, color=color)
                 plt.title(title, fontweight ="bold",fontsize=12)
-                plt.savefig('aggregator/static/plots/' + save_name +'_plot.png',
-                                                            bbox_inches='tight')
+                name = save_name +'_plot.png'
             else:
-                plt.savefig('aggregator/static/plots/' + self.name +'_plot.png',
-                                                            bbox_inches='tight')
+                name = self.name +'_plot.png'
         else:
             plt.grid(False)
             if save_name != None:
                 ax2.set_ylabel(ylabel, color=color)
                 plt.title(title, fontweight ="bold",fontsize=12)
-                plt.savefig('aggregator/static/plots/'+save_name+'_plot_dark.png',
-                                                            bbox_inches='tight')
+                name = save_name +'_plot_dark.png'
             else:
-                plt.savefig('aggregator/static/plots/'+self.name+'_plot_dark.png',
-                                                            bbox_inches='tight')
+                name = self.name + '_plot_dark.png'
+
+
+        # plot_path = url + name
+        # plt.savefig(plot_path, bbox_inches='tight')
+        # plot_instance = Plots()
+        # plot_instance.plot_name = name
+        # plot_instance.plot = plot_path[6:]
+        # plot_instance.save()
+
+        plot_path = url + name
+        plt.savefig(plot_path, bbox_inches='tight')
+        db_plot = Plots.objects.filter(plot_name=name)
+        db_plot.update(plot=plot_path[6:])
+
         plt.close('Figure')
         plt.close('all')
 
@@ -138,6 +170,8 @@ class Main_Plot_Maker():
 
         for agg in db_aggregator:
             date = agg.__dict__.get('aggregation_date')
+            # print(date)
+            # date = list(date.values())[0]
             date = str(date)[:10]
             dates.append(date)
             balance = agg.__dict__.get('balance')
@@ -175,6 +209,7 @@ class Main_Plot_Maker():
         ax.set_zorder(1) # for graph to be on top of other graphs
         ax.tick_params(axis ='y', labelcolor = self.color)
         ax.tick_params(axis ='x', rotation=45)
+        ax.xaxis.set_major_locator(plt.MaxNLocator(5))
         ax.ticklabel_format(style='plain', axis='y')
         plt.xticks(rotation=45,fontsize=7)
         plt.legend(fontsize=7) # to display graphs labels
@@ -183,12 +218,30 @@ class Main_Plot_Maker():
         plt.title('All aggregations and all categories',
                                                  fontweight ="bold",fontsize=12)
 
+        # if Main_Plot_Maker.plot_style == 'Solarize_Light2':
+        #     plt.savefig('aggregator/static/plots/' + 'combined' + '_plot.png',
+        #                                                     bbox_inches='tight')
+        # else:
+        #     plt.savefig('aggregator/static/plots/'+'combined'+'_plot_dark.png',
+        #                                                     bbox_inches='tight')
+
+        url = 'media/aggregator/plots/'
         if Main_Plot_Maker.plot_style == 'Solarize_Light2':
-            plt.savefig('aggregator/static/plots/' + 'combined' + '_plot.png',
-                                                            bbox_inches='tight')
+            name = 'combined_plot.png'
         else:
-            plt.savefig('aggregator/static/plots/'+'combined'+'_plot_dark.png',
-                                                            bbox_inches='tight')
+            name = 'combined_plot_dark.png'
+        # plot_path = url + name
+        # plt.savefig(plot_path, bbox_inches='tight')
+        # plot_instance = Plots()
+        # plot_instance.plot_name = name
+        # plot_instance.plot = plot_path[6:]
+        # plot_instance.save()
+
+        plot_path = url + name
+        plt.savefig(plot_path, bbox_inches='tight')
+        db_plot = Plots.objects.filter(plot_name=name)
+        db_plot.update(plot=plot_path[6:])
+
         plt.close('all')
 
 
@@ -222,12 +275,30 @@ class Main_Plot_Maker():
                                                         fontweight ="bold")
         plt.ylabel('Balance (BTC)')
         plt.xlabel('Sum of all wallets transactions')
+        # if Main_Plot_Maker.plot_style == 'Solarize_Light2':
+        #     plt.savefig('aggregator/static/plots/bal_tr_scatter.png',
+        #                                                     bbox_inches='tight')
+        # else:
+        #     plt.savefig('aggregator/static/plots/bal_tr_scatter_dark.png',
+        #                                                     bbox_inches='tight')
+
+        url = 'media/aggregator/plots/'
         if Main_Plot_Maker.plot_style == 'Solarize_Light2':
-            plt.savefig('aggregator/static/plots/bal_tr_scatter.png',
-                                                            bbox_inches='tight')
+            name = 'bal_tr_scatter.png'
         else:
-            plt.savefig('aggregator/static/plots/bal_tr_scatter_dark.png',
-                                                            bbox_inches='tight')
+            name = 'bal_tr_scatter_dark.png'
+        # plot_path = url + name
+        # plt.savefig(plot_path, bbox_inches='tight')
+        # plot_instance = Plots()
+        # plot_instance.plot_name = name
+        # plot_instance.plot = plot_path[6:]
+        # plot_instance.save()
+
+        plot_path = url + name
+        plt.savefig(plot_path, bbox_inches='tight')
+        db_plot = Plots.objects.filter(plot_name=name)
+        db_plot.update(plot=plot_path[6:])
+
         plt.close('all')
 
 
@@ -288,12 +359,30 @@ class Main_Plot_Maker():
         plt.ylabel('Balance (BTC)')
         plt.xlabel('Sum of all wallets transactions')
 
+        # if Main_Plot_Maker.plot_style == 'Solarize_Light2':
+        #     plt.savefig('aggregator/static/plots/bal_tr_cat_scatter.png',
+        #                                                     bbox_inches='tight')
+        # else:
+        #     plt.savefig('aggregator/static/plots/bal_tr_cat_scatter_dark.png',
+        #                                                     bbox_inches='tight')
+
+        url = 'media/aggregator/plots/'
         if Main_Plot_Maker.plot_style == 'Solarize_Light2':
-            plt.savefig('aggregator/static/plots/bal_tr_cat_scatter.png',
-                                                            bbox_inches='tight')
+            name = 'bal_tr_cat_scatter.png'
         else:
-            plt.savefig('aggregator/static/plots/bal_tr_cat_scatter_dark.png',
-                                                            bbox_inches='tight')
+            name = 'bal_tr_cat_scatter_dark.png'
+        # plot_path = url + name
+        # plt.savefig(plot_path, bbox_inches='tight')
+        # plot_instance = Plots()
+        # plot_instance.plot_name = name
+        # plot_instance.plot = plot_path[6:]
+        # plot_instance.save()
+
+        plot_path = url + name
+        plt.savefig(plot_path, bbox_inches='tight')
+        db_plot = Plots.objects.filter(plot_name=name)
+        db_plot.update(plot=plot_path[6:])
+
         plt.close('all')
 
 
@@ -301,13 +390,20 @@ class Main_Plot_Maker():
         "Makes pie chart"
         plt.style.use(['default', 'seaborn-paper'])
         plt.style.use(Main_Plot_Maker.plot_style)
-        categories = ['normal', 'marked', 'exchange/pool', 'algo', 'trading']
-        colors = ['grey', 'red', 'yellow','magenta', 'cyan']
+        categories = ['normal', 'exchange/pool', 'marked',  'algo', 'trading']
+        colors = ['grey', 'yellow', 'red','magenta', 'cyan']
         slices = []
         labels = []
+        wallet_today_list = str(Wallet_List.objects.filter(id=1)[0].wallet_list)
 
         for c in categories:
-            slice = len(Wallet.objects.filter(category=c))
+            db_wallets = Wallet.objects.filter(category=c)
+            slice = len(db_wallets)
+            for wallet in db_wallets:
+                wallet_name = wallet.wallet_name
+                if wallet_today_list.find(wallet_name) == -1:
+                    slice -= 1
+                    continue
             c = 'interesting' if c == 'marked' else c
             c = 'high volume' if c == 'algo' else c
             c = 'medium volume' if c == 'trading' else c
@@ -324,10 +420,28 @@ class Main_Plot_Maker():
         plt.title("Wallets in each category", fontweight ="bold", fontsize=10)
         plt.tight_layout()
 
+        # if Main_Plot_Maker.plot_style == 'Solarize_Light2':
+        #     plt.savefig('aggregator/static/plots/wall_cat_pie.png')
+        # else:
+        #     plt.savefig('aggregator/static/plots/wall_cat_pie_dark.png')
+
+        url = 'media/aggregator/plots/'
         if Main_Plot_Maker.plot_style == 'Solarize_Light2':
-            plt.savefig('aggregator/static/plots/wall_cat_pie.png')
+            name = 'wall_cat_pie.png'
         else:
-            plt.savefig('aggregator/static/plots/wall_cat_pie_dark.png')
+            name = 'wall_cat_pie_dark.png'
+        # plot_path = url + name
+        # plt.savefig(plot_path)
+        # plot_instance = Plots()
+        # plot_instance.plot_name = name
+        # plot_instance.plot = plot_path[6:]
+        # plot_instance.save()
+
+        plot_path = url + name
+        plt.savefig(plot_path)
+        db_plot = Plots.objects.filter(plot_name=name)
+        db_plot.update(plot=plot_path[6:])
+
         plt.close('all')
 
 
@@ -339,11 +453,16 @@ class Main_Plot_Maker():
         colors = ['grey', 'yellow', 'red','magenta', 'cyan']
         slices = []
         labels = []
+        wallet_today_list = str(Wallet_List.objects.filter(id=1)[0].wallet_list)
 
         for c in categories:
             cat_sum = 0
             slice = Wallet.objects.filter(category=c)
+
             for s in slice:
+                wallet_name = s.wallet_name
+                if wallet_today_list.find(wallet_name) == -1:
+                    continue
                 in_nums = s.__dict__.get('in_nums')
                 out_nums = s.__dict__.get('out_nums')
                 tr_sum = float(in_nums) + float(out_nums)
@@ -364,10 +483,28 @@ class Main_Plot_Maker():
                                                 fontweight ="bold", fontsize=10)
         plt.tight_layout()
 
+        # if Main_Plot_Maker.plot_style == 'Solarize_Light2':
+        #     plt.savefig('aggregator/static/plots/wall_tr_cat_pie.png')
+        # else:
+        #     plt.savefig('aggregator/static/plots/wall_tr_cat_pie_dark.png')
+
+        url = 'media/aggregator/plots/'
         if Main_Plot_Maker.plot_style == 'Solarize_Light2':
-            plt.savefig('aggregator/static/plots/wall_tr_cat_pie.png')
+            name = 'wall_tr_cat_pie.png'
         else:
-            plt.savefig('aggregator/static/plots/wall_tr_cat_pie_dark.png')
+            name = 'wall_tr_cat_pie_dark.png'
+        # plot_path = url + name
+        # plt.savefig(plot_path)
+        # plot_instance = Plots()
+        # plot_instance.plot_name = name
+        # plot_instance.plot = plot_path[6:]
+        # plot_instance.save()
+
+        plot_path = url + name
+        plt.savefig(plot_path)
+        db_plot = Plots.objects.filter(plot_name=name)
+        db_plot.update(plot=plot_path[6:])
+
         plt.close('all')
 
 
@@ -379,11 +516,15 @@ class Main_Plot_Maker():
         colors = ['grey', 'red', 'yellow','magenta', 'cyan']
         slices = []
         labels = []
+        wallet_today_list = str(Wallet_List.objects.filter(id=1)[0].wallet_list)
 
         for c in categories:
             cat_sum = 0
             slice = Wallet.objects.filter(category=c)
             for s in slice:
+                wallet_name = s.wallet_name
+                if wallet_today_list.find(wallet_name) == -1:
+                    continue
                 balance = s.__dict__.get('balance')
                 cat_sum += float(balance)
             c = 'interesting' if c == 'marked' else c
@@ -401,8 +542,24 @@ class Main_Plot_Maker():
                                                 fontweight ="bold", fontsize=10)
         plt.tight_layout()
 
+
+
+        url = 'media/aggregator/plots/'
         if Main_Plot_Maker.plot_style == 'Solarize_Light2':
-            plt.savefig('aggregator/static/plots/wall_bal_cat_pie.png')
+            name = 'wall_bal_cat_pie.png'
         else:
-            plt.savefig('aggregator/static/plots/wall_bal_cat_pie_dark.png')
+            name = 'wall_bal_cat_pie_dark.png'
+        # plot_path = url + name
+        # plt.savefig(plot_path)
+        # plot_instance = Plots()
+        # plot_instance.plot_name = name
+        # plot_instance.plot = plot_path[6:]
+        # # print(plot_path[6:])
+        # plot_instance.save()
+
+        plot_path = url + name
+        plt.savefig(plot_path)
+        db_plot = Plots.objects.filter(plot_name=name)
+        db_plot.update(plot=plot_path[6:])
+
         plt.close('all')

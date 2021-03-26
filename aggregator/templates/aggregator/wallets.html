@@ -9,7 +9,7 @@
     **correlation ≠ causation
   </div>
 
-  <div class="table-wrapper">
+  <div class="table-wrapper" style="overflow-x:auto;">>
   <table class='fl-table'>
     <thead>
       <tr>
@@ -34,7 +34,7 @@
   </table>
   </div>
 
-  {% if length_of_list == 1000 %}
+  {% if length_of_list == 50 %}
     <a class="nav-item nav-link" href="{% url 'aggregator-wallets_list'%}?value=[10000, 'light'] ">Load all wallets</a>
   {% endif %}
 {% endblock %}

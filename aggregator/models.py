@@ -2,6 +2,13 @@ from django.db import models
 from django.utils import timezone
 # Create your models here.
 
+class Plots(models.Model):
+    plot = models.ImageField(default="default", upload_to="aggregator/plots/")
+    plot_name = models.TextField(default='default')
+    def __str__(self):
+        return self.plot_name
+
+
 class Wallet_List(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     wallet_list = models.TextField(blank=True)
@@ -47,7 +54,6 @@ class Aggregator(models.Model):
 
 
 class Category(models.Model):
-
     aggregation_date = models.DateTimeField(default=timezone.now)
 
     marked_balance = models.TextField(default='0')

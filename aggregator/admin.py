@@ -13,3 +13,6 @@ admin.site.register(Aggregator)
 
 from .models import Category
 admin.site.register(Category)
+
+from .models import Plots
+admin.site.register(Plots)

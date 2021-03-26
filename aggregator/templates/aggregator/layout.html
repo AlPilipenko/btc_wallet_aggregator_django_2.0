@@ -6,7 +6,6 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'aggregator/main.css' %}">
@@ -19,27 +18,20 @@
   </head>
 
   <body>
-    <!-- <a class="nav-item nav-link" value="boom" href="{% url 'aggregator-home' %}">Home</a> -->
-
-    <ul class='nav'>
-      <li><a class="nav-item nav-link" href="{% url 'aggregator-home' %}?value=light">Plots</a></li>
-      <li><a class="nav-item nav-link" href="{% url 'aggregator-plot_func' %}">Plot func</a></li>
-      <li><a class="nav-item nav-link" href="{% url 'aggregator-wallets_list_maker_func' %}">List maker func</a></li>
-      <li><a class="nav-item nav-link" href="{% url 'aggregator-cat_func' %}">Categories func</a></li>
-      <li><a class="nav-item nav-link" href="{% url 'aggregator-agg_func' %}">Agg func</a></li>
-      <li><a class="nav-item nav-link" href="{% url 'aggregator-wallets_list' %}?value=[1000, 'light']" >All wallets</a></li>
-      <li><a class="nav-item nav-link" href="{% url 'aggregator-about' %}?value=light">About</a></li>
-      <li><a class="nav-item nav-link" href="{% url 'aggregator-dark_theme' %}">Dark theme</a></li>
-    </ul>
-
-    
-    <div class="container">
-      {% block content %}{% endblock %}
+    <div class="header">
+      <!-- <a href="{% url 'aggregator-agg_func' %}">Agg func</a> -->
+      <a href="{% url 'aggregator-home' %}?value=light">Plots</a>
+      <!-- <a href="{% url 'aggregator-plot_func' %}">Plot func</a>
+      <a href="{% url 'aggregator-wallets_list_maker_func' %}">List maker func</a>
+      <a href="{% url 'aggregator-cat_func' %}">Categories func</a> -->
+      <a href="{% url 'aggregator-wallets_list' %}?value=[50, 'light']" >Wallets</a>
+      <a href="{% url 'aggregator-about' %}?value=light">About</a>
+      <a href="{% url 'aggregator-home' %}?value=dark">Dark mode</a>
     </div>
 
-
-
-
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

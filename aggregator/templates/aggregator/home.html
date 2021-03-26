@@ -2,7 +2,7 @@
 {% block content%}
 {% load static %}
 
-    <h1 style="color: dodgerblue; font-weight: bold;">wall<b style="color: red">agg</b> <b style="color: grey">- bitcoin</b> wallets <b style="color: red">aggregator</b></h1>
+    <h3 style="color: dodgerblue; font-weight: bold; margin-top: 20px;">wall<b style="color: red">agg</b> <b style="color: grey">- bitcoin</b> wallets <b style="color: red">aggregator</b></h3>
     <div class="disclaimer">
       *all data was acquired on {{ date }} at
        <a href="http://www.bitinfocharts.com">bitinfocharts.com</a><br>
@@ -10,7 +10,6 @@
     </div>
 
     <div class="description">
-    <!-- <h1>Description</h1> -->
     <p>This website collects the top 10000 richest Bitcoin wallets data on the daily
        basis from bitinfocharts.com. Data that could potentially present interest is:
     </p>
@@ -28,20 +27,19 @@
 
     <div class="row">
       <div class="column">
-        <img src="{% static '/plots/all_plot.png' %}" alt="">
+        <img src="{{ all_plot }}" alt="">
       </div>
       <div class="column">
-        <img src="{% static '/plots/all_btc_plot.png' %}" alt="">
+        <img src="{{ all_btc_plot }}" alt="">
       </div>
       <div class="column">
-        <img src="{% static '/plots/tr_delta_btc_price_plot.png' %}" alt="">
+        <img src="{{ tr_delta_btc_price_plot }}" alt="">
       </div>
 
       <div class="column">
-        <img src="{% static '/plots/new_wallets_btc_price_plot.png' %}" alt="">
+        <img src="{{ new_wallets_btc_price_plot }}" alt="">
       </div>
     </div>
-
 
     <div class="description">
       <p> Wallets can be broken into categories based on their "performance".
@@ -54,49 +52,54 @@
           outs transactions are allocated to the "high volume" category. And the rest
           of the wallets are placed to the "normal" category.
       </p>
+      <br>
 
-      <p>Here is a quick categories breakdown:</p>
-      <div class="row">
-        <div class="column">
-      <ul>
-        <li><p>Binance, Poloniex, Kraken, SlushPool etc.             </p></li>
-        <li><p>Marked by bitinfocharts                               </p></li>
-        <li><p>Total transactions number > 500                       </p></li>
-        <li><p>> 2000 ins and > 2000 outs transactions               </p></li>
-        <li><p>Wallets that don't fit in any of the categories above </p></li>
-      </ul>
-      </div>
-        <div class="column">
-            <p style="color: #c6c669">--> exchange/pool </p>
-            <p style="color: red">--> interesting</p>
-            <p style="color: cyan">--> medium-volume </p>
-            <p style="color: magenta">--> high-volume </p>
-            <p style="color: grey">--> normal </p>
-        </div>
-      <p>*wallet can be assigned to only one category</p>
-    </div>
-    </div>
+      <p style="text-align: center; font-weight: bold">Here is a quick categories breakdown:</p>
+      <table style="margin-right: auto; margin-left: auto; ">
+        <tr>
+          <td style="border-right: 2px solid grey;"><p>Binance, Poloniex, Kraken, SlushPool, etc</p></td>
+          <td><p style="color: #c6c669;">&nbsp&nbsp&nbsp&nbsp exchange/pool </p></td>
+        </tr>
+        <tr>
+          <td style="border-right: 2px solid grey;"><p>Marked by bitinfocharts</p></td>
+          <td><p style="color: red">&nbsp&nbsp&nbsp&nbsp interesting</p></td>
+        </tr>
+        <tr>
+          <td style="border-right: 2px solid grey;"><p>Total transactions number > 500</p></td>
+          <td><p style="color: cyan">&nbsp&nbsp&nbsp&nbsp volume:medium </p></td>
+        </tr>
+        <tr>
+          <td style="border-right: 2px solid grey;"><p>> 2000 ins and > 2000 outs transactions</p></td>
+          <td><p style="color: magenta">&nbsp&nbsp&nbsp&nbsp volume:high </p></td>
+        </tr>
+        <tr>
+          <td style="border-right: 2px solid grey;"><p>Wallets that don't fit in any of the categories above &nbsp&nbsp&nbsp&nbsp</p></td>
+          <td><p style="color: black;">&nbsp&nbsp&nbsp&nbsp normal </p></td>
+        </tr>
+      </table>
+      <br>
+      <p style="font-size: 12px;text-align: center">*wallet can be assigned to only one category</p>
+     </div>
 
     <div class="row">
       <div class="column">
-        <img src="{% static '/plots/bal_tr_cat_scatter.png' %}" alt="">
+        <img src="{{ bal_tr_cat_scatter }}" alt="">
       </div>
       <div class="column">
-          <img src="{% static '/plots/bal_tr_scatter.png' %}" alt="">
+          <img src="{{ bal_tr_scatter }}" alt="">
       </div>
       <div class="column">
-        <img src="{% static '/plots/algo_plot.png' %}" alt="">
+        <img src="{{ algo_plot }}" alt="">
       </div>
       <div class="column">
-        <img src="{% static '/plots/exchanges_plot.png' %}" alt="">
+        <img src="{{ exchanges_plot }}" alt="">
       </div>
       <div class="column">
-        <img src="{% static '/plots/trading_plot.png' %}" alt="">
+        <img src="{{ trading_plot }}" alt="">
       </div>
       <div class="column">
-        <img src="{% static '/plots/marked_plot.png' %}" alt="">
+        <img src="{{ marked_plot }}" alt="">
     </div>
-
 
     <div class="description">
       <p>Here is a bunch of informative pie-charts. We can clearly see
@@ -107,18 +110,17 @@
 
     <div class="row">
       <div class="column">
-        <img src="{% static '/plots/wall_bal_cat_pie.png' %}" alt="" style="width:100%">
+        <img src="{{ wall_bal_cat_pie }}" alt="" style="width:90%">
       </div>
       <div class="column">
-        <img src="{% static '/plots/wall_tr_cat_pie.png' %}" alt="" style="width:100%">
+        <img src="{{ wall_tr_cat_pie }}" alt="" style="width:90%">
       </div>
       <div class="column">
-        <img src="{% static '/plots/wall_cat_pie.png' %}" alt="" style="width:100%">
+        <img src="{{ wall_cat_pie }}" alt="" style="width:90%">
       </div>
       <div class="column">
-        <img src="{% static '/plots/combined_plot.png' %}" alt="">
+        <img src="{{ combined_plot }}" alt="" style="width:90%">
       </div>
     </div>
-
-
+    
 {% endblock %}

@@ -8,7 +8,13 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from django.utils import timezone
+from . import analyse
 headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36'}
+
+def restart_analyse():
+    print("Error occured. Will try again in 1 hour")
+    time.sleep(3600)
+    analyse.periodic_trends()
 
 
 def address_filter(wallet):
@@ -116,9 +122,11 @@ def wallet_raw_extractor(url_set):
 
                 yield wallet
         except:
-            from sys import exit
             print("Connection lost or IP probably blocked!")
-            exit(1)
+            restart_analyse()
+            from sys import exit
+            exit(0)
+            # break
 
 
 def register_new_wallet(wallet):
@@ -178,7 +186,7 @@ def update_wallet(db_wallet, wallet, db_wallet_ins, db_wallet_outs):
 
 
 def up_to_date_check(wallet_list):
-    """Resiters new wallets to the DB. Updates existing wallets."""
+    """Regiters new wallets to the DB. Updates existing wallets."""
     for wallet in wallet_list:
         if len(wallet) == 0:
             continue
@@ -203,17 +211,22 @@ def main(srch_rng, start_pg):
     """ Makes up to date checks for wallets before aggregating.
         Fetches whole list of wallets (max=10000) """
     wallet_sets_url_list = wallet_sets_url_list_maker(srch_rng, start_pg)
+
     wallets_scraped_data_list = wallet_data_scraper(wallet_sets_url_list)
 
-    import itertools
-    wallets_scraped_data_list = list(itertools.chain.from_iterable(
+    "In case of no internet connection"
+    try:
+        import itertools
+        wallets_scraped_data_list = list(itertools.chain.from_iterable(
                                                      wallets_scraped_data_list))
+    except:
+        exit(1)
 
     cleaned_wal_scraped_data = [x for x in wallets_scraped_data_list if x != []]
     today_wall_list = Wallet_List.objects.filter(id=1)
     today_wall_list.update(wallet_list=cleaned_wal_scraped_data,
                     updated_at=timezone.now())
-                    
+
     up_to_date_check(wallets_scraped_data_list)
     btc_price = btc_price_extractor()
     print('Wallet search completed. Database updated.')

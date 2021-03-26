@@ -1,40 +1,81 @@
 from django.shortcuts import render, redirect # transforms templates to HttpResponse
 from django.http import HttpResponse
-from .models import Wallet, Aggregator, Wallet_List
+from .models import Wallet, Aggregator, Wallet_List, Plots
 from .utils import analyse, wallet_categories, ploting
-from .tests import sorter
+from django.conf import settings
+import os
 #Views always has to return HttpResponse or exceptions
 # def home(request): # must take request
 #     return HttpResponse("<h1>test</h1>")
 # def about(request):
 #     return HttpResponse("<h1><u>About</u></h1>")
 
+light_theme_plots = [
+                      'wall_bal_cat_pie.png',
+                      'wall_tr_cat_pie.png',
+                      'wall_cat_pie.png',
+                	  'bal_tr_cat_scatter.png',
+                	  'bal_tr_scatter.png',
+                	  'combined_plot.png',
+                	  'marked_plot.png',
+                	  'trading_plot.png',
+                	  'exchanges_plot.png',
+                	  'algo_plot.png',
+                	  'new_wallets_btc_price_plot.png',
+                	  'tr_delta_btc_price_plot.png',
+                	  'all_btc_plot.png',
+                	  'all_plot.png',
+                    ]
+
+dark_theme_plots = [
+                      'wall_bal_cat_pie_dark.png',
+                      'wall_tr_cat_pie_dark.png',
+                      'wall_cat_pie_dark.png',
+                	  'bal_tr_cat_scatter_dark.png',
+                	  'bal_tr_scatter_dark.png',
+                	  'combined_plot_dark.png',
+                	  'marked_plot_dark.png',
+                	  'trading_plot_dark.png',
+                	  'exchanges_plot_dark.png',
+                	  'algo_plot_dark.png',
+                	  'new_wallets_btc_price_plot_dark.png',
+                	  'tr_delta_btc_price_plot_dark.png',
+                	  'all_btc_plot_dark.png',
+                	  'all_plot_dark.png',
+                    ]
+
 
 def home(request): # must take request
-    # passed variables have to be dict?
+    context = {}
     theme = str(request.GET.get('value'))
-    if theme == 'light':
-        return render(request, 'aggregator/home.html', {'title': 'home'})
-    else:
-        return render(request, 'aggregator/plot_dark.html', {'title': 'home'})
 
+    if theme == 'dark':
+        for p in dark_theme_plots:
+            plot = Plots.objects.filter(plot_name=p).first().plot.url
+            context[p[:-4]] = plot
+        return render(request, 'aggregator/plot_dark.html', context)
+    else:
+        for p in light_theme_plots:
+            plot = Plots.objects.filter(plot_name=p).first().plot.url
+            context[p[:-4]] = plot
+
+        context['title'] = 'home'
+        return render(request, 'aggregator/home.html', context)
 
 def about(request):
     # passing dictionary as argument so that page has a title
     theme = str(request.GET.get('value'))
-    if theme == 'light':
-        return render(request, 'aggregator/about.html', {'title': 'about'})
-    else:
+    if theme == 'dark':
         return render(request, 'aggregator/about_dark.html', {'title': 'about'})
+    else:
+        return render(request, 'aggregator/about.html', {'title': 'about'})
 
-
-def light_theme(request):
-    return render(request, 'aggregator/home.html')
-
-
-def dark_theme(request):
-    return render(request, 'aggregator/plot_dark.html')
-
+# def light_theme(request):
+#     return redirect(home)
+#
+#
+# def dark_theme(request):
+#     return render(request, 'aggregator/plot_dark.html')
 
 def wallets_list(request):
     "Desctiption"
@@ -50,12 +91,12 @@ def wallets_list(request):
         'date' : str(today_date)[:10],
         'length_of_list' : wallet_number,
               }
-    if theme == 'light':
-        return render(request, 'aggregator/wallets.html', wallets)
-    else:
+    if theme == 'dark':
         return render(request, 'aggregator/wallets_dark.html', wallets)
+    else:
+        return render(request, 'aggregator/wallets.html', wallets)
 
-
+"can delete all code below"
 def agg_func(request):
     analyse.periodic_trends()
     return render(request, 'aggregator/home.html')
@@ -94,7 +135,7 @@ def plot_func(request):
         all_plot.plot_graph_type1(['aggregation_date', 'transactions_delta',
                         'btc_price'], 'Transactions delta','tr_delta_btc_price',
                             'Transactions delta and BTC price', 'BTC price ($)')
-        all_plot.plot_graph_type1(['aggregation_date', 'new_wallets', 'btc_price'],
+        all_plot.plot_graph_type1(['aggregation_date','new_wallets','btc_price'],
                                           'New wallets','new_wallets_btc_price',
                              'Daily new wallets and BTC price', 'BTC price ($)')
         algo_plot.plot_graph_type1(['aggregation_date', 'algo_balance',
@@ -128,11 +169,13 @@ def wallets_list_maker_func(request):
             continue
         else:
             wallet_list.append(wallet)
-    wallet_list = sorted(wallet_list, key=lambda k: float(k['balance']), reverse=True)
+    wallet_list = sorted(wallet_list, key=lambda k: float(k['balance']),
+                                                                   reverse=True)
 
     for i, wallet in enumerate(wallet_list):
-        new_wallet_list.append([i+1, wallet.get('address'), round(float(wallet.get('balance'))),
-                               wallet.get('in_nums'), wallet.get('out_nums')])
+        new_wallet_list.append([i+1, wallet.get('address'),
+                                round(float(wallet.get('balance'))),
+                                wallet.get('in_nums'), wallet.get('out_nums')])
     updated_display_list = Wallet_List.objects.filter(id=1)
     updated_display_list.update(wallet_list_display = new_wallet_list)
     return render(request, 'aggregator/home.html')

@@ -14,12 +14,11 @@ urlpatterns = [
     path('cat-func/', views.cat_func, name='aggregator-cat_func'),
     path('plot-func/', views.plot_func, name='aggregator-plot_func'),
     path('wallets_list/', views.wallets_list, name='aggregator-wallets_list'),
-    path('light_theme/', views.light_theme,
-                                        name='aggregator-light_theme'),
-    path('dark_theme/', views.dark_theme,
-                                        name='aggregator-dark_theme'),
+    # path('light_theme/', views.light_theme,
+    #                                     name='aggregator-light_theme'),
+    # path('dark_theme/', views.dark_theme,
+    #                                     name='aggregator-dark_theme'),
     path('wallets_list_maker_func/', views.wallets_list_maker_func,
-                                        name='aggregator-wallets_list_maker_func'),
-
+                                     name='aggregator-wallets_list_maker_func'),
 
 ]
