@@ -20,7 +20,7 @@ def percentage_diff(new_value, old_value):
     except:
         return 0
 
-
+ 
 def cat_trends_calc(category, wallets_scraped_list, cat_name):
     "Aggregates balances of wallets by categories"
     balance = 0

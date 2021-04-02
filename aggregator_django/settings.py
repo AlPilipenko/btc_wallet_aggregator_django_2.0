@@ -59,14 +59,7 @@ CRONJOBS = [
     ('30 05 * * *', 'aggregator.cron.scrap_update'),
 ]
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/var/tmp/django_cache',
-        'TIMEOUT': 0,
 
-    }
-}
 ROOT_URLCONF = 'aggregator_django.urls'
 
 TEMPLATES = [
@@ -77,7 +70,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 # 'django.core.context_processors.media',
-                'django.template.context_processors.media',
+                # 'django.template.context_processors.media',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -138,7 +131,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-from django.conf import settings
+# from django.conf import settings
 
 
 # STATIC_ROOT = os.path.join(BASE_DIR, "static")
@@ -146,3 +139,12 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
+
+# CACHES = {
+#     'default':{
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': 'DataFlair',
+#         'LOCATION': '213.168.251.235:11211',
+#         'TIMEOUT': 0,
+#     }
+# }

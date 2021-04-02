@@ -4,6 +4,8 @@ from .models import Wallet, Aggregator, Wallet_List, Plots
 from .utils import analyse, wallet_categories, ploting
 from django.conf import settings
 import os
+
+
 #Views always has to return HttpResponse or exceptions
 # def home(request): # must take request
 #     return HttpResponse("<h1>test</h1>")
@@ -45,14 +47,18 @@ dark_theme_plots = [
                     ]
 
 
+
 def home(request): # must take request
     context = {}
     theme = str(request.GET.get('value'))
 
     if theme == 'dark':
         for p in dark_theme_plots:
+            print("!!!!!!!")
             plot = Plots.objects.filter(plot_name=p).first().plot.url
             context[p[:-4]] = plot
+            print("!!",plot)
+        print(context)
         return render(request, 'aggregator/plot_dark.html', context)
     else:
         for p in light_theme_plots:
@@ -70,12 +76,6 @@ def about(request):
     else:
         return render(request, 'aggregator/about.html', {'title': 'about'})
 
-# def light_theme(request):
-#     return redirect(home)
-#
-#
-# def dark_theme(request):
-#     return render(request, 'aggregator/plot_dark.html')
 
 def wallets_list(request):
     "Desctiption"
@@ -97,14 +97,17 @@ def wallets_list(request):
         return render(request, 'aggregator/wallets.html', wallets)
 
 "can delete all code below"
+
+
 def agg_func(request):
     analyse.periodic_trends()
-    return render(request, 'aggregator/home.html')
+    return redirect(home)
 
 
 def cat_func(request):
     wallet_categories.cat_sorter()
     return render(request, 'aggregator/home.html')
+
 
 
 def plot_func(request):
@@ -152,7 +155,8 @@ def plot_func(request):
         ploting.Main_Plot_Maker.plot_pie_type1()
         ploting.Main_Plot_Maker.plot_pie_type2()
         ploting.Main_Plot_Maker.plot_pie_type3()
-    return render(request, 'aggregator/home.html')
+
+    return redirect(home)
 
 
 def wallets_list_maker_func(request):

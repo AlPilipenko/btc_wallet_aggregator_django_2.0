@@ -2,6 +2,7 @@
 {% block content%}
 {% load static %}
 
+
     <h3 style="color: dodgerblue; font-weight: bold; margin-top: 20px;">wall<b style="color: red">agg</b> <b style="color: grey">- bitcoin</b> wallets <b style="color: red">aggregator</b></h3>
     <div class="disclaimer">
       *all data was acquired on {{ date }} at
@@ -24,7 +25,7 @@
         the plots.
     </p>
     </div>
-
+    
     <div class="row">
       <div class="column">
         <img src="{{ all_plot }}" alt="">
@@ -122,5 +123,5 @@
         <img src="{{ combined_plot }}" alt="" style="width:90%">
       </div>
     </div>
-    
+
 {% endblock %}

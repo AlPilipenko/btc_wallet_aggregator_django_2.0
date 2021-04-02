@@ -10,10 +10,10 @@ urlpatterns = [
     path('', views.home, name='aggregator-home'),
     # path('tests', views.tests, name='aggregator-tests'),
     path('about/', views.about, name='aggregator-about'), #  name='aggregator-about' - important for URLs lookup(in home.html)
+    path('wallets_list/', views.wallets_list, name='aggregator-wallets_list'),
     path('agg-func/', views.agg_func, name='aggregator-agg_func'),  # leave trailing /
     path('cat-func/', views.cat_func, name='aggregator-cat_func'),
     path('plot-func/', views.plot_func, name='aggregator-plot_func'),
-    path('wallets_list/', views.wallets_list, name='aggregator-wallets_list'),
     # path('light_theme/', views.light_theme,
     #                                     name='aggregator-light_theme'),
     # path('dark_theme/', views.dark_theme,
